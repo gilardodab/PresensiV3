@@ -1,5 +1,5 @@
 @if($cuties->isEmpty())
-    <p>Tidak ada data cuti untuk periode ini.</p>
+    <p class="text-center">Tidak ada data cuti untuk periode ini.</p>
 @else
     @foreach($cuties as $row_cuty)
         <div class="item">
