@@ -117,8 +117,8 @@
                 </div>
             </div>
         </section>
-    @elseif(request()->route()->getName() == 'karyawan.edit')
-        <!-- Kode untuk case 'edit' -->
+        @elseif(request()->route()->getName() == 'karyawan.edit')
+        {{-- Form untuk Edit Karyawan --}}
         <section class="content-header">
             <h1>Edit Data<small> Karyawan</small></h1>
             <ol class="breadcrumb">
@@ -127,8 +127,161 @@
                 <li class="active">Edit Karyawan</li>
             </ol>
         </section>
+        
         <section class="content">
-            <!-- Your content for editing an employee -->
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab_1" data-toggle="tab">Profil</a></li>
+                                <li><a href="#tab_2" data-toggle="tab">Ubah Password</a></li>
+                            </ul>
+                        </div>
+        
+                        <div class="box-body">
+                            <div class="nav-tabs-custom">
+                                <div class="tab-content">
+                                    <!-- Tab Profil -->
+                                    <div class="tab-pane active" id="tab_1">
+                                        <form class="form-horizontal validate update-karyawan" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT') <!-- Tambahkan method PUT untuk update -->
+        
+                                            <div class="box-body">
+                                                <!-- Employees Code -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">NIK</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" name="employees_code" value="{{ $employee->employees_code }}" required>
+                                                        <input type="hidden" name="id" value="{{ $employee->id }}" readonly required>
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Employees Name -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Nama</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" name="employees_name" value="{{ $employee->employees_name }}" required>
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Position -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Jabatan</label>
+                                                    <div class="col-sm-6">
+                                                        <select class="form-control" name="position_id" required>
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach($positions as $position)
+                                                                <option value="{{ $position->position_id }}" {{ $employee->position_id == $position->position_id ? 'selected' : '' }}>
+                                                                    {{ $position->position_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Shift -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Shift</label>
+                                                    <div class="col-sm-6">
+                                                        <select class="form-control" name="shift_id" required>
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach($shifts as $shift)
+                                                                <option value="{{ $shift->shift_id }}" {{ $employee->shift_id == $shift->shift_id ? 'selected' : '' }}>
+                                                                    {{ $shift->shift_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Building -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Penempatan</label>
+                                                    <div class="col-sm-6">
+                                                        <select class="form-control" name="building_id" required>
+                                                            <option value="">- Pilih -</option>
+                                                            @foreach($buildings as $building)
+                                                                <option value="{{ $building->building_id }}" {{ $employee->building_id == $building->building_id ? 'selected' : '' }}>
+                                                                    {{ $building->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Photo -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Foto</label>
+                                                    <div class="col-sm-6">
+                                                        <div class="upload-media">
+                                                            @if($employee->photo)
+                                                                <img width="80" class="preview" src="{{ asset('storage/photos/'.$employee->photo) }}" >
+                                                            @else
+                                                                <img width="80" class="preview" src="{{ asset('content/avatar.jpg') }}">
+                                                            @endif
+                                                        </div>
+                                                        <input type="file" class="btn btn-default" name="photo" accept="image/*">
+                                                        <small>Kosongkan jika tidak ingin mengubah</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Box Footer -->
+                                            <div class="box-footer">
+                                                <div class="col-sm-2"></div>
+                                                <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Simpan</button>
+                                                <a class="btn btn-danger" href="{{ route('karyawan.index') }}"><i class="fa fa-remove"></i> Batal</a>
+                                            </div>
+                                        </form>
+                                    </div>
+        
+                                    <!-- Tab Ubah Password -->
+                                    <div class="tab-pane" id="tab_2">
+                                        <form class="form-horizontal validate update-password">
+                                            @csrf
+                                            @method('PUT')
+        
+                                            <div class="box-body">
+                                                <!-- Employees Email -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Email</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" name="employees_email" value="{{ $employee->employees_email }}" readonly required>
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Employees Password -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Password</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="password" class="form-control" name="employees_password" placeholder="Password baru | Min 6 karakter" required>
+                                                    </div>
+                                                </div>
+                                                        <!-- Konfirmasi Password -->
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Konfirmasi Password</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="password" class="form-control" name="employees_password_confirmation" id="password_confirmation"  placeholder="Konfirmasi Password" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <!-- Box Footer -->
+                                            <div class="box-footer">
+                                                <div class="col-sm-2"></div>
+                                                <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Simpan</button>
+                                                <a class="btn btn-danger" href="{{ route('karyawan.index') }}"><i class="fa fa-remove"></i> Batal</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div> <!-- /.tab-content -->
+                            </div> <!-- /.nav-tabs-custom -->
+                        </div> <!-- /.box-body -->
+                    </div> <!-- /.box box-solid -->
+                </div> <!-- /.col -->
+            </div> <!-- /.row -->
         </section>
     @else
         <!-- Default case -->
@@ -219,8 +372,10 @@
         </section>
     @endif
     <script>
+        
     var karyawanStoreUrl = "{{ route('karyawan.store') }}";
-    var karyawanUpdateUrl = "{{ route('karyawan.update', '') }}";
+    var karyawanUpdateUrl = "{{ route('karyawan.update', $employee->id) }}"; 
+    var updatePasswordUrl = "{{ route('karyawan.update.password', $employee->id) }}";
     //delete karyawan.destroy with id
     var karyawanDeleteUrl = "{{ route('karyawan.destroy', '') }}";
 </script>

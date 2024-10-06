@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Position;
 
@@ -10,9 +11,10 @@ class PositionController extends Controller
 // Display a listing of the resource
 public function index()
 {
-    $jabatan = Position::all();
+    $jabatan = Position::withCount('employees')->get();
+    $positions = Position::withCount('employees')->get();
     // dd($jabatans); // Tambahkan ini untuk debug
-    return view('adminyofa.jabatan.index', compact('jabatan'));
+    return view('adminyofa.jabatan.index', compact('jabatan', 'positions'));
 }
 
 

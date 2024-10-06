@@ -74,8 +74,8 @@
           </a>
         </li>
 
-        <li class="{{ Request::is('setting') ? 'active' : '' }}">
-          <a href="{{ url('/setting') }}">
+        <li class="{{ Request::is('settings') ? 'active' : '' }}">
+          <a href="{{ url('/settings') }}">
             <i class="fa fa-cogs" aria-hidden="true"></i>
             <span>Pengaturan</span>
           </a>

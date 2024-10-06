@@ -17,6 +17,8 @@
 <script src="{{ asset('admin/js/shifts.js') }}"></script>
 <script src="{{ asset('admin/js/karyawan.js') }}"></script>
 <script src="{{ asset('admin/js/cuti.js') }}"></script>
+{{-- <script src="{{ asset('admin/js/settings.js') }}"></script> --}}
+
 <script src="{{ asset('admin/js/webcame/webcodecamjs.js') }}"></script>
 
 <script src="{{ asset('admin/plugins/datepicker/bootstrap-datepicker.js') }}"></script>

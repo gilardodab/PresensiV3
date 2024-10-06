@@ -8,6 +8,7 @@ use App\Models\Position;
 use App\Models\Shift;
 use App\Models\Building;
 use App\Models\Cuty;
+use App\Models\Setting;
 use Illuminate\Support\Facades\View;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -32,18 +33,28 @@ class AuthServiceProvider extends ServiceProvider
 
         //view global user 
         View::composer('*', function ($view) {
+            $today = now()->toDateString();
+            $currentMonth = now()->month;
+            $currentYear = now()->year;
             $user = User::first();
-            $presence = Presence::all();
+            // $presence = Presence::all();
+            $presence = Presence::whereDate('presence_date', $today)->get();
             $month = date('m');
             $year = date('Y');
             $employeeCount = Employee ::count();
             $positionCount = Position::count();
             $shiftCount = Shift::count();
             $buildingCount = Building::count();
-            $absentDay  = Presence::with('employee')->get();
-            $cutyRequests  = Cuty::with('employees')->get();
+            $absentDay  = Presence::with('employee')->whereDate('presence_date', $today)->get();
+            $cutyRequests = Cuty::with('employees')
+                            ->whereMonth('cuty_start', $currentMonth)
+                            ->whereYear('cuty_start', $currentYear)
+                            ->get();
             // $userId = auth()->user()->id;
-            $cuti = Cuty::all();
+            // $cuti = Cuty::all();
+            // Mengambil data cuty dengan cuty_status = 3
+            $cuti = Cuty::where('cuty_status', 3)->get();
+            $settings = Setting::where('id', '1'); // Ambil satu data pengaturan
             $view->with('user', $user);
             $view->with('presence', $presence);
             $view->with('cuti', $cuti);
@@ -55,6 +66,7 @@ class AuthServiceProvider extends ServiceProvider
             $view->with('buildingCount', $buildingCount);
             $view->with('absentDay', $absentDay);
             $view->with('cutyRequests', $cutyRequests);
+            $view->with('settings', $settings);
         });
     }
 }

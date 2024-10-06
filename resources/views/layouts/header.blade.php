@@ -18,48 +18,55 @@
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-calendar" aria-hidden="true"></i>
+              @if ($cuti->count() > 0 )
               <span class="label label-warning">{{$cuti->count()}}</span>
+              @endif
             </a>
             <ul class="dropdown-menu">
-              <li class="header">Anda memiliki  notifikasi</li>
+              <li class="header">Anda memiliki  notifikasi {{$cuti->count()}}</li>
               <li>
+                
                 <ul class="menu">
-                  
+                  @forelse ($cuti as $item)
                     <li>
                       <a href="">
-                        @forelse ($cuti as $item)
-                        <i class="fa fa-calendar text-aqua"></i>Cuti 
-                        : {{$item->cuty_start }}sampai {{$item->cuty_end}} <br>
-                        <label class="label label-warning">Jumlah: </label>
-                        @empty
-                        <i class="fa fa-calendar text-aqua"></i>Tidak Ada Cuti
-                        @endforelse
+                        <i class="fa fa-calendar text-aqua"></i>Cuti : {{$item->cuty_start }} sampai {{$item->cuty_end}} <br>
+                        Jumlah: <label class="label label-warning">{{$item->cuty_total}} </label>
+                        
                       </a>
+                      @empty
+                        <i class="fa fa-calendar text-aqua"></i>Tidak Ada Cuti
                     </li>
+                    @endforelse
                 </ul>
+                
               </li>
             </ul>
           </li>
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
+              @if ($presence->count() > 0)
               <span class="label label-warning">{{$presence->count()}}</span>
+              @endif
             </a>
             <ul class="dropdown-menu">
-              <li class="header">Anda memiliki  notifikasi</li>
+              <li class="header">Anda memiliki  notifikasi <span class="label label-warning">{{$presence->count()}}</span></li>
               <li>
                 <ul class="menu">
-                  
+                   @forelse ($presence as $item)
                     <li>
+                     
                       <a href="">
-                        @forelse ($presence as $item)
+                        
                         <i class="fa fa-sign-in text-aqua"></i>Absen Masuk : {{$item->time_in}}<br>
                           <i class="fa fa-sign-out text-aqua"></i>Absen Pulang :
-                        @empty
-                        <i class="fa fa-sign-in text-aqua"></i>Belum Ada Presensi 
-                        @endforelse
+                        
                       </a>
+                      @empty
+                        <p style="text-align: center;">Belum Ada Presensi</p>
                     </li>
+                    @endforelse
                 </ul>
               </li>
             </ul>

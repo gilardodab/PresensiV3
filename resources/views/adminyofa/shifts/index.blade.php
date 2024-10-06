@@ -23,7 +23,7 @@
                             </div>
                             <div class="box-body">
                                 <div class="table-responsive">
-                                    <table id="datatable" class="table table-bordered">
+                                    <table id="sw-datatable" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th style="width:20px" class="text-center">No</th>

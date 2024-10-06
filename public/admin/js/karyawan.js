@@ -98,84 +98,90 @@ $(document).ready(function() {
     
     
     /* -------------------- Edit ------------------- */
+    // Update Karyawan
+    // Update Karyawan
     $('.update-karyawan').submit(function (e) {
-        if($("#building").val()==""){    
-             swal({title: 'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
-             loading();
+        e.preventDefault(); // Prevent page reload
+
+        if ($("#building").val() == "") {
+            swal({ title: 'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500 });
             return false;
-        }
-        else{
-            loading();
-            e.preventDefault();
+        } else {
+            var formData = new FormData(this);
+
             $.ajax({
-                url:"",
+                url: karyawanUpdateUrl, // Gunakan variabel yang sudah didefinisikan di Blade
                 type: "POST",
-                data: new FormData(this),
+                data: formData,
                 processData: false,
                 contentType: false,
                 cache: false,
-                async: false,
-                beforeSend: function () { 
-                    loading();
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
+                },
+                beforeSend: function () {
+                    $(".loading").show();
                 },
                 success: function (data) {
-                    if (data == 'success') {
-                        swal({title: 'Berhasil!', text: 'Data Karyawan berhasil disimpan.!', icon: 'success', timer: 1500,});
-                        setTimeout(function(){ location.reload(); }, 2500);
-                       //window.setTimeout(window.location.href = "./karyawan",2500);
-    
+                    if (data.success) {
+                        swal({ title: 'Berhasil!', text: 'Data Karyawan berhasil disimpan.!', icon: 'success', timer: 1500 });
+                        setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        swal({title: 'Oops!', text: data, icon: 'error', timer: 1500,});
+                        swal({ title: 'Oops!', text: data.error, icon: 'error', timer: 1500 });
                     }
-    
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
                 },
                 complete: function () {
                     $(".loading").hide();
-                },
+                }
             });
         }
-      });
-    
-    
-    
-    /* -------------------- Edit Password ------------------- */
+    });
+
+
+    // Update Password
     $('.update-password').submit(function (e) {
-        if($("#password").val()==""){    
-             swal({title: 'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
-             loading();
+        e.preventDefault(); // Mencegah refresh halaman
+
+        if ($("#password").val() == "") {
+            swal({ title: 'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500 });
             return false;
-        }
-        else{
-            loading();
-            e.preventDefault();
+        } else {
+            var formData = new FormData(this);
+
             $.ajax({
-                url:"",
+                url: updatePasswordUrl,
                 type: "POST",
-                data: new FormData(this),
+                data: formData,
                 processData: false,
                 contentType: false,
                 cache: false,
-                async: false,
-                beforeSend: function () { 
-                    loading();
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Token CSRF
+                },
+                beforeSend: function () {
+                    // Tampilkan loading sebelum request
+                    $(".loading").show();
                 },
                 success: function (data) {
-                    if (data == 'success') {
-                        swal({title: 'Berhasil!', text: 'Password Baru berhasil disimpan.!', icon: 'success', timer: 2000,});
-                       
-                       //window.setTimeout(window.location.href = "./karyawan",2500);
-    
+                    if (data.success) {
+                        swal({ title: 'Berhasil!', text: 'Password baru berhasil disimpan.!', icon: 'success', timer: 2000 });
+                        setTimeout(function () { location.reload(); }, 2000); // Reload setelah 2 detik
                     } else {
-                        swal({title: 'Oops!', text: data, icon: 'error', timer: 1500,});
+                        swal({ title: 'Oops!', text: data.error, icon: 'error', timer: 1500 });
                     }
-    
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText); // Untuk debug jika ada error
                 },
                 complete: function () {
-                    $(".loading").hide();
-                },
+                    $(".loading").hide(); // Sembunyikan loading setelah request selesai
+                }
             });
         }
-      });
+    });
     
     
     

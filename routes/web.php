@@ -9,6 +9,7 @@ use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\CutyController;
+use App\Http\Controllers\SettingController;
 use App\Models\Employee;
 
 /*
@@ -41,7 +42,7 @@ Route::middleware(['guest:user'])->group(function () {
     // Route::get('/adminyofa', function () {
     //     return view('auth.loginadmin');
     // })->name('loginadmin');
-    Route::get('/admin/dashboard', function () {
+    Route::get('/adminyofa', function () {
         return view('adminyofa.dashboard');
     })->name('dashboardadmin');
     //old
@@ -101,7 +102,8 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('karyawan', [EmployeeController::class, 'store'])->name('karyawan.store');
     // Store a new employee
     Route::get('karyawan/{id}/edit', [EmployeeController::class, 'edit'])->name('karyawan.edit');  // Form to edit an employee
-    Route::put('karyawan/{id}', [EmployeeController::class, 'update'])->name('karyawan.update');  // Update employee
+    Route::put('karyawan/{id}', [EmployeeController::class, 'updateKaryawan'])->name('karyawan.update');
+    Route::put('karyawan/{id}/update-password', [EmployeeController::class, 'updatePassword'])->name('karyawan.update.password');    
     Route::delete('karyawan/{id}', [EmployeeController::class, 'destroy'])->name('karyawan.destroy');  // Delete employee
 
     Route::get('/kantor', [BuildingController::class, 'index'])->name('adminyofa.kantor.index');
@@ -141,20 +143,22 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('user',[AuthController::class, 'useradmin'])->name('adminyofa.user.index');
 
+
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings/update', [SettingController::class, 'updateSetting'])->name('settings.update');
+    Route::post('/settings/profile', [SettingController::class, 'updateProfile'])->name('settings.profile');    
+    Route::get('/settings/umum', [SettingController::class, 'loadSettingUmum'])->name('settings.umum');
+    Route::get('/settings/profile', [SettingController::class, 'loadSettingProfile'])->name('settings.profile');
+
     //route group adminyofa
     Route ::group(['prefix' => 'adminyofa'], function () {
         Route::get('/jabatan', [PositionController::class, 'index'])->name('adminyofa.jabatan.index');
         Route::get('/jabatan/create', [PositionController::class, 'create'])->name('jabatan.create');
         Route::get('/jabatan/edit/{id}', [PositionController::class, 'edit'])->name('jabatan.edit');
         Route::get('/jabatan/{id}', [PositionController::class, 'show'])->name('jabatan.show');
-        Route::post('adminyofa/jabatan', [PositionController::class, 'store'])->name('jabatan.store');
+        Route::post('/jabatan/store', [PositionController::class, 'store'])->name('jabatan.store');
         Route::put('/jabatan/{id}', [PositionController::class, 'update'])->name('jabatan.update');
         Route::delete('/jabatan/{position_id}', [PositionController::class, 'destroy'])->name('jabatan.destroy');
-
-        //ShiftController
-
-
-
     });
 });
 

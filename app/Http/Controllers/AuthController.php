@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+
 use App\Models\Position;
 use App\Models\Shift;
 use App\Models\Building;
@@ -80,31 +81,71 @@ class AuthController extends Controller
         return redirect()->route('register.create')->with('success', 'Employee registered successfully!');
     }
 
-    public function login(Request $request)
+    // public function login(Request $request)
+    // {
+
+    //     $salt = '$%DEf0&TTd#%dSuTyr47542"_-^@#&*!=QxR094{a911}+';
+
+    //     // Validate the request
+    //     $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required'
+    //     ]);
+    
+    //     // Check if an employee with the provided email exists
+    //     $employee = Employee::where('employees_email', $request->email)->first();
+    
+    //     // If employee is found and password matches, log them in
+    //     if ($employee && Hash::check($request->password, $employee->employees_password)) {
+    //         // Log in the employee using the 'employee' guard
+    //         Auth::guard('employee')->login($employee);
+    
+    //         // Return JSON success response for AJAX
+    //         return response()->json(['status' => 'success', 'message' => 'Login successful'], 200);
+    //     }
+    
+    //     // Return error message if credentials are incorrect
+    //     // return response()->json(['status' => 'error', 'message' => 'Invalid credentials'], 401);
+    //     return response()->json(['status' => 'error', 'message' => 'Email atau password salah'], 401);
+
+    // }
+
+        public function login(Request $request)
     {
-        // Validate the request
+        // Salt yang digunakan untuk hashing password
+        $salt = salt();
+
+        // Validasi input dari form login
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
-    
-        // Check if an employee with the provided email exists
-        $employee = Employee::where('employees_email', $request->email)->first();
-    
-        // If employee is found and password matches, log them in
-        if ($employee && Hash::check($request->password, $employee->employees_password)) {
-            // Log in the employee using the 'employee' guard
-            Auth::guard('employee')->login($employee);
-    
-            // Return JSON success response for AJAX
-            return response()->json(['status' => 'success', 'message' => 'Login successful'], 200);
-        }
-    
-        // Return error message if credentials are incorrect
-        // return response()->json(['status' => 'error', 'message' => 'Invalid credentials'], 401);
-        return response()->json(['status' => 'error', 'message' => 'Email atau password salah'], 401);
 
+        // Cek apakah karyawan dengan email yang diberikan ada di database
+        $employee = Employee::where('employees_email', $request->email)->first();
+
+        // Jika karyawan ditemukan, lanjutkan pengecekan password
+        if ($employee) {
+            // Gabungkan salt dengan password yang dimasukkan
+            $passwordWithSalt = $salt . $request->password;
+
+            // Hash password dengan SHA-256
+            $hashedPassword = hash('sha256', $passwordWithSalt);
+
+            // Cek apakah password yang di-hash cocok dengan password di database
+            if ($hashedPassword === $employee->employees_password) {
+                // Login karyawan menggunakan guard 'employee'
+                Auth::guard('employee')->login($employee);
+
+                // Return JSON success response untuk AJAX
+                return response()->json(['status' => 'success', 'message' => 'Login successful'], 200);
+            }
+        }
+
+        // Jika email atau password salah, return error message
+        return response()->json(['status' => 'error', 'message' => 'Email atau password salah'], 401);
     }
+
 
     public function showRegisterForm()
     {
@@ -199,12 +240,13 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+        $today = now()->toDateString();
         $employeeCount = Employee::count();
         $positionCount = Position::count();
         $shiftCount = Shift::count();
         $buildingCount = Building::count();
         $user = User::first();
-        $absentDay  = Presence::with('employee')->get();
+        $absentDay = Presence::with('employee')->whereDate('presence_date', $today)->get();
         $cutyRequests  = Cuty::with('employees')->get();
         return view('adminyofa.dashboard', compact('employeeCount', 'user', 'positionCount', 'shiftCount', 'buildingCount','absentDay','cutyRequests'));
     }

@@ -10,6 +10,13 @@ $year     = DATE('Y');
 $time     = DATE('H:i:s');
 $timeNow  = DATE('Y-m-d H:i:s');
 
+#hash salt 
+if (!function_exists('salt')) {
+  function salt() {
+      return '$%DEf0&TTd#%dSuTyr47542"_-^@#&*!=QxR094{a911}+';
+  }
+}
+
 if (!function_exists('getIndonesianMonthName')) {
     function getIndonesianMonthName($monthNumber)
     {
@@ -31,6 +38,7 @@ if (!function_exists('getIndonesianMonthName')) {
         return $months[$monthNumber] ?? '';
     }
 }
+
 
 
 function ubah_tgl2($tanggal) {

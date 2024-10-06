@@ -110,7 +110,6 @@
                     <h4 class="modal-title">Update Data</h4>
                 </div>
                 <form class="form update-jabatan" method="post">
-                    @csrf
                     <input type="hidden" name="id" id="txtid" required readonly>
                     <div class="modal-body">
                         <div class="form-group">
@@ -126,4 +125,8 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('admin/js/jabatan.js') }}"></script>
+    <script>
+        var jabatanUpdateUrl = "{{ route('jabatan.update') }}";
+    </script>
 @endsection
