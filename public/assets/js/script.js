@@ -177,7 +177,7 @@ $(document).ready(function() {
                 },
                 success: function (response) {
                     if (response.status == 'success') {
-                        swal({title: 'Berhasil!', text: response.data ? response.data.toString() : 'Profil berhasil di perbaharui!', icon: 'success', timer: 2000,});
+                        swal({title: 'Berhasil!', text:  'Profil berhasil di perbaharui!', icon: 'success', timer: 2000,});
                         // setTimeout(function(){ location.reload(); }, 2500);
                         console.log(response.data );
                         $(".btn-profile").text('Simpan');
@@ -199,43 +199,54 @@ $(document).ready(function() {
     
     
 //     /* ---------- UPDATE PASSWORD-----------------*/
-//     $('#update-password').submit(function (e) {
-//         e.preventDefault();
-//         if($('#employees_password').val()==''){    
-//              swal({title:'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
-//             return false;
-//             loading();
-//         }
-//         else{
-//             loading();
-//             $.ajax({
-//                 url:"",
-//                 type: "POST",
-//                 data: new FormData(this),
-//                 processData: false,
-//                 contentType: false,
-//                 cache: false,
-//                 async: false,
-//                 beforeSend: function () { 
-//                   loading();
-//                 },
-//                 success: function (data) {
-//                     if (data == 'success') {
-//                         swal({title: 'Berhasil!', text: 'Password berhasil di perbaharui!', icon: 'success', timer: 2000,});
-//                         setTimeout(function(){ location.reload(); }, 2500);
-                        
-//                     } else {
-//                         swal({title: 'Oops!', text: data, icon: 'error', timer: 2000,});
-                       
-//                     }
-//                 },
-    
-//                 complete: function () {
-//                      $(".loading").hide();
-//                 },
-//             });
-//         }
-//     });
+    $('#update-password').submit(function (e) {
+        e.preventDefault();
+
+        // Validasi password
+        if ($('#employees_password').val() === '') {
+            swal({ title: 'Oops!', text: 'Password tidak boleh kosong!', icon: 'error', timer: 1500 });
+            return;
+        }
+
+        // Mulai loading
+        loading();
+
+        $.ajax({
+            url: updatepassUrl,
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            cache: false,
+            beforeSend: function () {
+                loading();
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    swal({ title: 'Berhasil!', text: 'Password berhasil diperbaharui!', icon: 'success', timer: 2000 });
+                    setTimeout(function () { location.reload(); }, 2500);
+                } else {
+                    swal({ title: 'Oops!', text: response.message, icon: 'error', timer: 2000 });
+                }
+            },
+            error: function (xhr) {
+                let errors = xhr.responseJSON.errors;
+                let errorMessage = '';
+                if (errors) {
+                    Object.keys(errors).forEach(function (key) {
+                        errorMessage += errors[key] + '\n';
+                    });
+                } else {
+                    errorMessage = xhr.responseJSON.message || 'Terjadi kesalahan.';
+                }
+                swal({ title: 'Oops!', text: errorMessage, icon: 'error', timer: 2000 });
+            },
+            complete: function () {
+                $(".loading").hide();
+            }
+        });
+    });
+
     
 //     /* --------- UPDATE PHOTO PROFILE ---------------*/
 $(document).on('change','#avatar',function(){
@@ -575,106 +586,117 @@ loadData();
     
 //     /* ------------------ LOAD DATA CALL PLAN ------------------*/
     
-//        loadDataCallPlan();
-//         function loadDataCallPlan() {
-//             $.ajax({
-//                 url: '',
-//                 type: 'POST',
-//                 success: function(data) {
-//                   $('.loaddatacallplan').html(data);
-//                 }
-//             });
-//         }
+       loadDataCallPlan();
+        function loadDataCallPlan() {
+            $.ajax({
+                url: loadcallplanUrl,
+                type: 'POST',
+                _token: "{{ csrf_token() }}",
+                success: function(data) {
+                  $('.loaddatacallplan').html(data);
+                }
+            });
+        }
         
         
     
-//         $('.btn-clear-callplan').click(function (e) {
-//             loadDataCallPlan();
-//             $('.start_date').val();
-//             $('.start_date').val();
-//         });
+        $('.btn-clear-callplan').click(function (e) {
+            loadDataCallPlan();
+            $('.start_date').val();
+            $('.start_date').val();
+        });
     
     
-//         $('.btn-sortir-callplan').click(function (e) {
-//                 var from = $('.start_date').val();
-//                 var to   = $('.end_date').val();
+        $('.btn-sortir-callplan').click(function (e) {
+                var from = $('.start_date').val();
+                var to   = $('.end_date').val();
     
-//                $.ajax({
-//                   url:"./sw-proses?action=callplan",
-//                   method:"POST",
-//                   data:{from:from,to:to},
-//                   dataType:"text",
-//                   cache: false,
-//                   async: false,
-//                     beforeSend: function () { 
-//                      loading();
-//                     },
-//                     success: function (data) {
-//                         $('.loaddatacallplan').html(data);
-//                     },
-//                 complete: function () {
-//                     $(".loading").hide();
-//                 },
-//             });
-//         });
-    
-//         /* ----------- ADD DATA Callplan ------------*/
-//         $('#form-add-callplan').submit(function (e) {
-//             e.preventDefault();
-//             if($("#tanggalcp").val()=="" || $("textarea.outlet").val()=="" ||  $("textarea.description").val()==""){  
-//                  swal({title:'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
-//                 return false;
-//                 loading();
-//             }
-//             else{
-//                 loading();
-//                 $.ajax({
-//                     url:"",
-//                     type: "POST",
-//                     data: new FormData(this),
-//                     processData: false,
-//                     contentType: false,
-//                     cache: false,
-//                     async: false,
-//                     beforeSend: function () { 
-//                       loading();
-//                     },
-//                     success: function (data) {
-//                         if (data == 'success') {
-//                             swal({title: 'Berhasil!', text: 'Data Call Plan berhasil ditambah!', icon: 'success', timer: 2500,});
-//                             loadDataCallPlan();
-//                             $('#modal-add').modal('hide');
-//                             $('#form-add-callplan').trigger("reset");
-//                         } else {
-//                             swal({title: 'Oops!', text: data, icon: 'error', timer: 1500,});
-//                         }
-    
-//                     },
-//                     complete: function () {
-//                         $(".loading").hide();
-//                     },
-//                 });
-//             }
-//         });
-    
-//        $(document).on('click', '.btn-update-callplan', function(){
-//             $('#modal-update').modal('show');
-//             var id = $(this).attr("data-id"); 
-//             document.getElementById('city-id').value = id;
-    
-//             var start = $(this).attr("data-start"); 
-//             document.getElementById('tanggal-cp').value = start;
-    
-                
-//             var outlet = $(this).attr("data-outlet"); 
-//             document.getElementById('outlet').value = outlet;
+               $.ajax({
+                  url: loadcallplanUrl,
+                  method:"POST",
+                  data:{from:from,to:to},
+                  dataType:"text",
+                  cache: false,
+                  async: false,
+                    beforeSend: function () { 
+                     loading();
+                    },
+                    success: function (data) {
+                        $('.loaddatacallplan').html(data);
+                    },
+                complete: function () {
+                    $(".loading").hide();
+                },
+            });
+        });
 
+        function formatDateToYMD(dateStr) {
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return dateStr;
+        }
+        
+        $('#form-add-callplan').submit(function (e) {
+            e.preventDefault();
+            const tanggalCP = formatDateToYMD($('#tanggal_cp').val());
+            var formData = new FormData(this);
+            formData.set('tanggal_cp', tanggalCP);
+        
+            if ($("#tanggal_cp").val().trim() === "" || $("input[name='nama_outlet']").val().trim() === "" || $("textarea[name='description']").val().trim() === "") {
+                swal({ title: 'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong!', icon: 'error', timer: 1500 });
+                return false;
+            } else {
+                loading();
+                $.ajax({
+                    url: storecallplanUrl,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    async: false,
+                    beforeSend: function () {
+                        loading();
+                    },
+                    success: function (data) {
+                        if (data.status === 'success') {
+                            swal({ title: 'Berhasil!', text: data.message, icon: 'success', timer: 2500 });
+                            loadDataCallPlan();
+                            $('#modal-add').modal('hide');
+                            $('#form-add-callplan')[0].reset();
+                        } else {
+                            swal({ title: 'Oops!', text: data.message, icon: 'error', timer: 1500 });
+                        }
+                    },
+                    complete: function () {
+                        $(".loading").hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        swal({ title: 'Error!', text: 'Terjadi kesalahan. Silakan coba lagi.', icon: 'error', timer: 1500 });
+                    }
+                });
+            }
+        });
+        
+    
+       $(document).on('click', '.btn-update-callplan', function(){
+            $('#modal-update').modal('show');
+            var id = $(this).attr("data-id"); 
+            document.getElementById('city-id').value = id;
+    
+            var start = $(this).attr("data-start"); 
+            document.getElementById('tanggal-cp').value = start;
+    
+            var nama_outlet = $(this).attr("data-outlet"); 
+            document.getElementById('nama_outlet').value = nama_outlet;
 
-//             var description = $(this).attr("data-description"); 
-//             document.getElementById('description').value = description;
-//             /*var cuty_description = $(this).attr("data-date"); 
-//             $('.status-date').html(tanggal);*/
-//         });
+            var description = $(this).attr("data-description"); 
+            document.getElementById('description').value = description;
+            /*var cuty_description = $(this).attr("data-date"); 
+            $('.status-date').html(tanggal);*/
+        });
 
 
 //         // $(document).on('click', '.btn-delete-callplan', function confirmDelete(id){
@@ -782,6 +804,165 @@ loadData();
 //         }
 //         window.open(url, '_blank');
 // });
+
+
+//     /* --------- LOAD DATA HISTORY Marketing---------------*/
+        loadDataKunjungan();
+        function loadDataKunjungan() {
+            $.ajax({
+                url: loadkunjunganUrl,
+                type: 'POST',
+                _token: "{{ csrf_token() }}",
+                success: function(data) {
+                $('.loaddatakunjungan').html(data);
+                }
+            });
+        }
+
+//         document.addEventListener('DOMContentLoaded', function() {
+//         var outletInput = document.querySelector('.outlet');
+    
+//         outletInput.addEventListener('input', function() {
+//             this.value = this.value.toUpperCase();
+//         });
+//     });
+
+//             document.addEventListener('DOMContentLoaded', function() {
+//             var outletInput = document.querySelector('.information');
+        
+//             outletInput.addEventListener('input', function() {
+//                 this.value = this.value.toUpperCase();
+//             });
+//     });
+
+//     $('.btn-clear').click(function (e) {
+//         loadDataMkt();
+//         $('.start_date').val();
+//         $('.start_date').val();
+//     });
+
+//     // $('.btn-sortirr').click(function (e) {
+//     //         var from = $('.start_date').val();
+//     //         var to   = $('.end_date').val();
+
+//     //        $.ajax({
+//     //           url:"./sw-proses?action=historymrkt",
+//     //           method:"POST",
+//     //           data:{from:from,to:to},
+//     //           dataType:"text",
+//     //           cache: false,
+//     //           async: false,
+//     //             beforeSend: function () { 
+//     //              loading();
+//     //             },
+//     //             success: function (data) {
+//     //                 $('.loaddatamkt').html(data);
+//     //             },
+//     //         complete: function () {
+//     //             $(".loading").hide();
+//     //         },
+//     //     });
+//     // });
+
+//     $('.btn-print').click(function (e) {
+//             var from        = $('.start_date').val();
+//             var to          = $('.end_date').val();
+//             var type        = $('.type').val();
+//             if(type =='pdf'){
+//                 // cek berdasarkan bulan
+//                 if(from==''){    
+//                     var url = "./print?action=pdf";
+//                 }else{
+//                     var url = "./print?action=pdf&from="+from+"&to="+to+"";
+//                 }
+//             }else{
+//                 if(from==''){    
+//                     var url = "./print?action=excel";
+//                 }else{
+//                     var url = "./print?action=excel&from="+from+"&to="+to+"";
+//                 }
+//             }
+//             window.open(url, '_blank');
+//     });
+
+//     /* ------------------- UPDATE DATA HISTORY ------------------------- */
+//         $(document).on('click', '.modal-update1', function(){
+//             $('#modal-show1').modal('show');
+//             var presensi_id = $(this).attr("data-id"); 
+//             document.getElementById('presensi_id').value = presensi_id;
+
+//             /*var masuk = $(this).attr("data-masuk"); 
+//             document.getElementById('timein').value = masuk;
+
+//             var pulang = $(this).attr("data-pulang"); 
+//             document.getElementById('timeout').value = pulang;*/
+
+//             // var status = $(this).attr("data-status"); 
+//             // document.getElementById('status').value = status;
+
+//             var information = $(this).attr("data-information"); 
+//             document.getElementById('information').value = information;
+        
+//             var callplans_id = $(this).attr("data-callplans_id"); 
+//             document.getElementById('callplans_id').value = callplans_id;
+
+//             var catatan = $(this).attr("data-catatan"); 
+//             document.getElementById('catatan').value = catatan;
+
+//             var tanggal = $(this).attr("data-date"); 
+//             $('.status-date').html(tanggal);
+//         });
+
+//         /* ---------- UPDATE HISTORY-----------------*/
+//         $('#update-historymkt').submit(function (e) {
+//             e.preventDefault();
+//             if($('#timein').val()=='' && $('#timeout').val()==''){    
+//                  swal({title:'Oops!', text: 'Harap bwidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
+//                 return false;
+//                 loading();
+//             }
+//             else{
+//                 //  loading();
+//                 $.ajax({
+//                     url:"./sw-proses?action=update-historymkt",
+//                     type: "POST",
+//                     data: new FormData(this),
+//                     processData: false,
+//                     contentType: false,
+//                     cache: false,
+//                     async: false,
+//                     beforeSend: function () { 
+//                     //    loading();
+//                     },
+//                     success: function (data) {
+//                         if (data == 'success') {
+//                             swal({title: 'Berhasil!', text: 'Presensi Kunjungan berhasil di perbaharui!', icon: 'success', timer: 2000,});
+//                             //setTimeout(function(){ location.reload(); }, 2500);
+//                             $('#modal-show1').modal('hide');
+                        
+//                             loadDataMkt();
+//                         } else {
+//                             swal({title: 'Oops!', text: data, icon: 'error', timer: 2000,});
+                        
+//                         }
+//                     },
+
+//                     complete: function () {
+//                          $(".loading").hide();
+//                          $('#modal-show1').modal('hide');
+//                     },
+//                 });
+//             }
+//         });
+
+//             $(document).on('click', '.btn-modal', function(){
+//                 $('#modal-location').modal();
+//                 var latitude  = $(this).attr("data-latitude");
+//                 var longitude = $(this).attr("data-longitude");
+//                 var name = $('.employees_name').html();
+//                 $(".modal-title-name").html(name);
+//                 document.getElementById("iframe-map").innerHTML ='<iframe src="./map.php?latitude='+latitude+'&longitude='+longitude+'&name='+name+'" frameborder="0" width="100%" height="400px" marginwidth="0" marginheight="0" scrolling="no">';
+//             });
 
 
 
@@ -899,162 +1080,5 @@ loadData();
 //         document.getElementById("iframea-map").innerHTML ='<iframe src="./action/map.php?latitude='+latitude+'&longitude='+longitude+'&name='+name+'" frameborder="0" width="100%" height="400px" marginwidth="0" marginheight="0" scrolling="no">';
 //     });
     
-//     /* --------- LOAD DATA HISTORY Marketing---------------*/
-//     loadDataMkt();
-//     function loadDataMkt() {
-//         $.ajax({
-//             url: './sw-proses?action=historymkt',
-//             type: 'POST',
-//             success: function(data) {
-//               $('.loaddatamkt').html(data);
-//             }
-//         });
-//     }
-    
-//         document.addEventListener('DOMContentLoaded', function() {
-//         var outletInput = document.querySelector('.outlet');
-        
-//         outletInput.addEventListener('input', function() {
-//             this.value = this.value.toUpperCase();
-//         });
-//     });
-    
-//             document.addEventListener('DOMContentLoaded', function() {
-//             var outletInput = document.querySelector('.information');
-            
-//             outletInput.addEventListener('input', function() {
-//                 this.value = this.value.toUpperCase();
-//             });
-//     });
-    
-//     $('.btn-clear').click(function (e) {
-//         loadDataMkt();
-//         $('.start_date').val();
-//         $('.start_date').val();
-//     });
-    
-//     // $('.btn-sortirr').click(function (e) {
-//     //         var from = $('.start_date').val();
-//     //         var to   = $('.end_date').val();
-    
-//     //        $.ajax({
-//     //           url:"./sw-proses?action=historymrkt",
-//     //           method:"POST",
-//     //           data:{from:from,to:to},
-//     //           dataType:"text",
-//     //           cache: false,
-//     //           async: false,
-//     //             beforeSend: function () { 
-//     //              loading();
-//     //             },
-//     //             success: function (data) {
-//     //                 $('.loaddatamkt').html(data);
-//     //             },
-//     //         complete: function () {
-//     //             $(".loading").hide();
-//     //         },
-//     //     });
-//     // });
-    
-//     $('.btn-print').click(function (e) {
-//             var from        = $('.start_date').val();
-//             var to          = $('.end_date').val();
-//             var type        = $('.type').val();
-//             if(type =='pdf'){
-//                 // cek berdasarkan bulan
-//                 if(from==''){    
-//                     var url = "./print?action=pdf";
-//                 }else{
-//                     var url = "./print?action=pdf&from="+from+"&to="+to+"";
-//                 }
-//             }else{
-//                 if(from==''){    
-//                     var url = "./print?action=excel";
-//                 }else{
-//                     var url = "./print?action=excel&from="+from+"&to="+to+"";
-//                 }
-//             }
-//             window.open(url, '_blank');
-//     });
-    
-//     /* ------------------- UPDATE DATA HISTORY ------------------------- */
-//         $(document).on('click', '.modal-update1', function(){
-//             $('#modal-show1').modal('show');
-//             var presensi_id = $(this).attr("data-id"); 
-//             document.getElementById('presensi_id').value = presensi_id;
-    
-//             /*var masuk = $(this).attr("data-masuk"); 
-//             document.getElementById('timein').value = masuk;
-    
-//             var pulang = $(this).attr("data-pulang"); 
-//             document.getElementById('timeout').value = pulang;*/
-    
-//             // var status = $(this).attr("data-status"); 
-//             // document.getElementById('status').value = status;
-    
-//             var information = $(this).attr("data-information"); 
-//             document.getElementById('information').value = information;
-            
-//             var callplans_id = $(this).attr("data-callplans_id"); 
-//             document.getElementById('callplans_id').value = callplans_id;
-
-//             var catatan = $(this).attr("data-catatan"); 
-//             document.getElementById('catatan').value = catatan;
-    
-//             var tanggal = $(this).attr("data-date"); 
-//             $('.status-date').html(tanggal);
-//         });
-    
-//         /* ---------- UPDATE HISTORY-----------------*/
-//         $('#update-historymkt').submit(function (e) {
-//             e.preventDefault();
-//             if($('#timein').val()=='' && $('#timeout').val()==''){    
-//                  swal({title:'Oops!', text: 'Harap bwidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
-//                 return false;
-//                 loading();
-//             }
-//             else{
-//                 //  loading();
-//                 $.ajax({
-//                     url:"./sw-proses?action=update-historymkt",
-//                     type: "POST",
-//                     data: new FormData(this),
-//                     processData: false,
-//                     contentType: false,
-//                     cache: false,
-//                     async: false,
-//                     beforeSend: function () { 
-//                     //    loading();
-//                     },
-//                     success: function (data) {
-//                         if (data == 'success') {
-//                             swal({title: 'Berhasil!', text: 'Presensi Kunjungan berhasil di perbaharui!', icon: 'success', timer: 2000,});
-//                             //setTimeout(function(){ location.reload(); }, 2500);
-//                             $('#modal-show1').modal('hide');
-                            
-//                             loadDataMkt();
-//                         } else {
-//                             swal({title: 'Oops!', text: data, icon: 'error', timer: 2000,});
-                            
-//                         }
-//                     },
-
-//                     complete: function () {
-//                          $(".loading").hide();
-//                          $('#modal-show1').modal('hide');
-//                     },
-//                 });
-//             }
-//         });
-
-//             $(document).on('click', '.btn-modal', function(){
-//                 $('#modal-location').modal();
-//                 var latitude  = $(this).attr("data-latitude");
-//                 var longitude = $(this).attr("data-longitude");
-//                 var name = $('.employees_name').html();
-//                 $(".modal-title-name").html(name);
-//                 document.getElementById("iframe-map").innerHTML ='<iframe src="./map.php?latitude='+latitude+'&longitude='+longitude+'&name='+name+'" frameborder="0" width="100%" height="400px" marginwidth="0" marginheight="0" scrolling="no">';
-//             });
-
 
     });

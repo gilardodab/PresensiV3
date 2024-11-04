@@ -31,9 +31,15 @@ public function store(Request $request)
         'position_name' => 'required|string|max:255'
     ]);
 
-    Position::create($validatedData);
-
-    return redirect()->route('adminyofa.jabatan.index')->with('success', 'Position created successfully.');
+    if ($validatedData == null) {
+        return response()->json('failed', 500);
+    }
+    try {
+        Position::create($validatedData);
+        return response()->json('success', 200);
+    } catch (\Exception $e) {
+        return response()->json($e->getMessage(), 500);
+    }
 }
 
 // Display the specified resource
@@ -49,22 +55,35 @@ public function edit(Position $position)
 }
 
 // Update the specified resource in storage
-public function update(Request $request, Position $position)
+public function update(Request $request, $id)
 {
     $validatedData = $request->validate([
         'position_name' => 'required|string|max:255'
     ]);
-
-    $position->update($validatedData);
-
-    return redirect()->route('adminyofa.jabatan.index')->with('success', 'Position updated successfully.');
+    if ($validatedData == null) {
+        return response()->json('failed', 500);
+    }
+    try {
+        $position = Position::findOrFail($id);
+        $position->position_name = $request->position_name;
+        $position->save();
+        return response()->json('success', 200);
+    } catch (\Exception $e) {
+        return response()->json($e->getMessage(), 500);
+    }
 }
 
 // Remove the specified resource from storage
-public function destroy(Position $position_id)
-{
-    $position_id->delete();
 
-    return redirect()->route('adminyofa.jabatan.index')->with('success', 'Position deleted successfully.');
+public function destroy($id)
+{
+    try {
+        $position_id = Position::findOrFail($id);
+        $position_id->delete();
+
+        return response()->json('success', 200);
+    } catch (\Exception $e) {
+        return response()->json($e->getMessage(), 500);
+    }
 }
 }

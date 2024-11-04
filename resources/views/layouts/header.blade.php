@@ -1,173 +1,239 @@
-<header class="main-header">
-    <a href="{{ url('/') }}" class="logo">
-      <span class="logo-mini"><b>E-PRESENSI</span>
-      <span class="logo-lg"><b>E-PRESENSI</b></span>
-    </a>
-    <nav class="navbar navbar-static-top">
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-      <div class="navbar-custom-menu pull-left">
-        <ul class="nav navbar-nav">
-          <li><a href="#"></a></li>
-        </ul>
+<nav class="navbar">
+  <a href="#" class="sidebar-toggler">
+    <i data-feather="menu"></i>
+  </a>
+  <div class="navbar-content">
+    <form class="search-form">
+      <div class="input-group">
+        <div class="input-group-text">
+          <i data-feather="search"></i>
+        </div>
+        <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
       </div>
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <li><a href="{{ url('/') }}" target="_blank"><i class="fa fa-desktop" aria-hidden="true"></i></a></li>
-          <li class="dropdown notifications-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-              @if ($cuti->count() > 0 )
-              <span class="label label-warning">{{$cuti->count()}}</span>
-              @endif
+    </form>
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src="{{ url('assets/images/flags/us.svg') }}" class="wd-20 me-1" title="us" alt="us"> <span class="ms-1 me-1 d-none d-md-inline-block">English</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="languageDropdown">
+          <a href="javascript:;" class="dropdown-item py-2"> <img src="{{ url('assets/images/flags/us.svg') }}" class="wd-20 me-1" title="us" alt="us"> <span class="ms-1"> English </span></a>
+          <a href="javascript:;" class="dropdown-item py-2"> <img src="{{ url('assets/images/flags/fr.svg') }}" class="wd-20 me-1" title="fr" alt="fr"> <span class="ms-1"> French </span></a>
+          <a href="javascript:;" class="dropdown-item py-2"> <img src="{{ url('assets/images/flags/de.svg') }}" class="wd-20 me-1" title="de" alt="de"> <span class="ms-1"> German </span></a>
+          <a href="javascript:;" class="dropdown-item py-2"> <img src="{{ url('assets/images/flags/pt.svg') }}" class="wd-20 me-1" title="pt" alt="pt"> <span class="ms-1"> Portuguese </span></a>
+          <a href="javascript:;" class="dropdown-item py-2"> <img src="{{ url('assets/images/flags/es.svg') }}" class="wd-20 me-1" title="es" alt="es"> <span class="ms-1"> Spanish </span></a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="appsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i data-feather="grid"></i>
+        </a>
+        <div class="dropdown-menu p-0" aria-labelledby="appsDropdown">
+          <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
+            <p class="mb-0 fw-bold">Web Apps</p>
+            <a href="javascript:;" class="text-muted">Edit</a>
+          </div>
+          <div class="row g-0 p-1">
+            <div class="col-3 text-center">
+              <a href="{{ url('/apps/chat') }}" class="dropdown-item d-flex flex-column align-items-center justify-content-center wd-70 ht-70"><i data-feather="message-square" class="icon-lg mb-1"></i><p class="tx-12">Chat</p></a>
+            </div>
+            <div class="col-3 text-center">
+              <a href="{{ url('/apps/calendar') }}" class="dropdown-item d-flex flex-column align-items-center justify-content-center wd-70 ht-70"><i data-feather="calendar" class="icon-lg mb-1"></i><p class="tx-12">Calendar</p></a>
+            </div>
+            <div class="col-3 text-center">
+              <a href="{{ url('/email/inbox') }}" class="dropdown-item d-flex flex-column align-items-center justify-content-center wd-70 ht-70"><i data-feather="mail" class="icon-lg mb-1"></i><p class="tx-12">Email</p></a>
+            </div>
+            <div class="col-3 text-center">
+              <a href="{{ url('/general/profile') }}" class="dropdown-item d-flex flex-column align-items-center justify-content-center wd-70 ht-70"><i data-feather="instagram" class="icon-lg mb-1"></i><p class="tx-12">Profile</p></a>
+            </div>
+          </div>
+          <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+            <a href="javascript:;">View all</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i data-feather="mail"></i>
+        </a>
+        <div class="dropdown-menu p-0" aria-labelledby="messageDropdown">
+          <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
+            <p>9 New Messages</p>
+            <a href="javascript:;" class="text-muted">Clear all</a>
+          </div>
+          <div class="p-1">
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="me-3">
+                <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="userr">
+              </div>
+              <div class="d-flex justify-content-between flex-grow-1">
+                <div class="me-4">
+                  <p>Leonardo Payne</p>
+                  <p class="tx-12 text-muted">Project status</p>
+                </div>
+                <p class="tx-12 text-muted">2 min ago</p>
+              </div>	
             </a>
-            <ul class="dropdown-menu">
-              <li class="header">Anda memiliki  notifikasi {{$cuti->count()}}</li>
-              <li>
-                
-                <ul class="menu">
-                  @forelse ($cuti as $item)
-                    <li>
-                      <a href="">
-                        <i class="fa fa-calendar text-aqua"></i>Cuti : {{$item->cuty_start }} sampai {{$item->cuty_end}} <br>
-                        Jumlah: <label class="label label-warning">{{$item->cuty_total}} </label>
-                        
-                      </a>
-                      @empty
-                        <i class="fa fa-calendar text-aqua"></i>Tidak Ada Cuti
-                    </li>
-                    @endforelse
-                </ul>
-                
-              </li>
-            </ul>
-          </li>
-          <li class="dropdown notifications-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-bell-o"></i>
-              @if ($presence->count() > 0)
-              <span class="label label-warning">{{$presence->count()}}</span>
-              @endif
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="me-3">
+                <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="userr">
+              </div>
+              <div class="d-flex justify-content-between flex-grow-1">
+                <div class="me-4">
+                  <p>Carl Henson</p>
+                  <p class="tx-12 text-muted">Client meeting</p>
+                </div>
+                <p class="tx-12 text-muted">30 min ago</p>
+              </div>	
             </a>
-            <ul class="dropdown-menu">
-              <li class="header">Anda memiliki  notifikasi <span class="label label-warning">{{$presence->count()}}</span></li>
-              <li>
-                <ul class="menu">
-                   @forelse ($presence as $item)
-                    <li>
-                     
-                      <a href="">
-                        
-                        <i class="fa fa-sign-in text-aqua"></i>Absen Masuk : {{$item->time_in}}<br>
-                          <i class="fa fa-sign-out text-aqua"></i>Absen Pulang :
-                        
-                      </a>
-                      @empty
-                        <p style="text-align: center;">Belum Ada Presensi</p>
-                    </li>
-                    @endforelse
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{$user->username}}<span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-                {{-- logout method POST --}}
-              <li><a href="{{ url('profileadmin') }}"><i class="fa fa-user"></i> Profile</a></li>
-
-              <li><a href="{{ url('settingadmin') }}"><i class="fa fa-cogs"></i> Pengaturan</a></li>
-
-              <li role="separator" class="divider"></li>
-                <!-- Include the logout form somewhere in your Blade template -->
-                <form id="logout-form" action="{{ route('logoutadmin') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-
-                <!-- Modify the logout link to use JavaScript to submit the form -->
-                <li>
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fa fa-sign-out"></i> Logout
-                    </a>
-                </li>
-
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
-</header>
-<aside class="main-sidebar">
-  <!-- sidebar: style can be found in sidebar.less -->
-  <div class="slimScrollDiv">
-    <section class="sidebar">
-      <!-- Sidebar user panel -->
-
-      <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
-        
-        <li class="active">
-          <a href="{{ url('/adminyofa/dashboard') }}">
-            <i class="fa fa-home"></i><span>Dashboard</span>
-          </a>
-        </li>
-        
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-database"></i> <span>Master Data</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <li class="treeview">
-                <a href="#">
-                  <i class="fa fa-database"></i> <span>Master Data</span>
-                  <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </span>
-                </a>
-                <ul class="treeview-menu">
-
-                   <a href="./karyawan"><i class="fa fa-circle-o"></i> Data Karyawan</a></li>
-                   <a href="./jabatan"><i class="fa fa-circle-o"></i> Data Jabatan</a></li>
-                   <a href="shift"><i class="fa fa-circle-o"></i> Data Jam Kerja</a></li>
-                   <a href="./lokasi"><i class="fa fa-circle-o"></i> Data Lokasi</a></li>
-                </ul>
-              </li>
-
-        <li>
-          <a href="{{ url('cutyadmin') }}"><i class="fa fa-calendar" aria-hidden="true"></i> <span>Data Permohonan Cuti</span></a>
-        </li>
-
-        <li>
-          <a href="{{ url('/absensi') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Data Absensi Harian</span></a>
-        </li>
-
-        <li>
-          <a href="{{ url('/absensim') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Data Absensi Kunjungan</span></a>
-        </li>
-
-        <li>
-          <a href="{{ url('/callplan') }}"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Data Call Plan</span></a>
-        </li>
-
-        <li>
-          <a href="{{ url('/setting') }}"><i class="fa fa-cogs" aria-hidden="true"></i> <span>Pengaturan</span></a>
-        </li>
-
-        <li>
-          <a href="{{ url('/user') }}"><i class="fa fa-user"></i> <span>Admin</span></a>
-        </li>
-        
-        <li>
-          <a href="javascript:void(0);" onclick="location.href='{{ url('/logout') }}';">
-            <i class="fa fa-sign-out text-red"></i> <span>Keluar</span>
-          </a>
-        </li>
-      </ul>
-    </section>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="me-3">
+                <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="userr">
+              </div>
+              <div class="d-flex justify-content-between flex-grow-1">
+                <div class="me-4">
+                  <p>Jensen Combs</p>
+                  <p class="tx-12 text-muted">Project updates</p>
+                </div>
+                <p class="tx-12 text-muted">1 hrs ago</p>
+              </div>	
+            </a>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="me-3">
+                <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="userr">
+              </div>
+              <div class="d-flex justify-content-between flex-grow-1">
+                <div class="me-4">
+                  <p>Amiah Burton</p>
+                  <p class="tx-12 text-muted">Project deatline</p>
+                </div>
+                <p class="tx-12 text-muted">2 hrs ago</p>
+              </div>	
+            </a>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="me-3">
+                <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="userr">
+              </div>
+              <div class="d-flex justify-content-between flex-grow-1">
+                <div class="me-4">
+                  <p>Yaretzi Mayo</p>
+                  <p class="tx-12 text-muted">New record</p>
+                </div>
+                <p class="tx-12 text-muted">5 hrs ago</p>
+              </div>	
+            </a>
+          </div>
+          <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+            <a href="javascript:;">View all</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i data-feather="bell"></i>
+          <div class="indicator">
+            <div class="circle"></div>
+          </div>
+        </a>
+        <div class="dropdown-menu p-0" aria-labelledby="notificationDropdown">
+          <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
+            <p>6 New Notifications</p>
+            <a href="javascript:;" class="text-muted">Clear all</a>
+          </div>
+          <div class="p-1">
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                <i class="icon-sm text-white" data-feather="gift"></i>
+              </div>
+              <div class="flex-grow-1 me-2">
+                <p>New Order Recieved</p>
+                <p class="tx-12 text-muted">30 min ago</p>
+              </div>	
+            </a>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                <i class="icon-sm text-white" data-feather="alert-circle"></i>
+              </div>
+              <div class="flex-grow-1 me-2">
+                <p>Server Limit Reached!</p>
+                <p class="tx-12 text-muted">1 hrs ago</p>
+              </div>	
+            </a>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="userr">
+              </div>
+              <div class="flex-grow-1 me-2">
+                <p>New customer registered</p>
+                <p class="tx-12 text-muted">2 sec ago</p>
+              </div>	
+            </a>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                <i class="icon-sm text-white" data-feather="layers"></i>
+              </div>
+              <div class="flex-grow-1 me-2">
+                <p>Apps are ready for update</p>
+                <p class="tx-12 text-muted">5 hrs ago</p>
+              </div>	
+            </a>
+            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+              <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                <i class="icon-sm text-white" data-feather="download"></i>
+              </div>
+              <div class="flex-grow-1 me-2">
+                <p>Download completed</p>
+                <p class="tx-12 text-muted">6 hrs ago</p>
+              </div>	
+            </a>
+          </div>
+          <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+            <a href="javascript:;">View all</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img class="wd-30 ht-30 rounded-circle" src="{{ url('https://via.placeholder.com/30x30') }}" alt="profile">
+        </a>
+        <div class="dropdown-menu p-0" aria-labelledby="profileDropdown">
+          <div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
+            <div class="mb-3">
+              <img class="wd-80 ht-80 rounded-circle" src="{{ url('https://via.placeholder.com/80x80') }}" alt="">
+            </div>
+            <div class="text-center">
+              <p class="tx-16 fw-bolder">Amiah Burton</p>
+              <p class="tx-12 text-muted">amiahburton@gmail.com</p>
+            </div>
+          </div>
+          <ul class="list-unstyled p-1">
+            <li class="dropdown-item py-2">
+              <a href="{{ url('/general/profile') }}" class="text-body ms-0">
+                <i class="me-2 icon-md" data-feather="user"></i>
+                <span>Profile</span>
+              </a>
+            </li>
+            <li class="dropdown-item py-2">
+              <a href="javascript:;" class="text-body ms-0">
+                <i class="me-2 icon-md" data-feather="edit"></i>
+                <span>Edit Profile</span>
+              </a>
+            </li>
+            <li class="dropdown-item py-2">
+              <a href="javascript:;" class="text-body ms-0">
+                <i class="me-2 icon-md" data-feather="repeat"></i>
+                <span>Switch User</span>
+              </a>
+            </li>
+            <li class="dropdown-item py-2">
+              <a href="javascript:;" class="text-body ms-0">
+                <i class="me-2 icon-md" data-feather="log-out"></i>
+                <span>Log Out</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
   </div>
-  <!-- /.sidebar -->
-</aside>
+</nav>

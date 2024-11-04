@@ -245,7 +245,8 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updatePassword(Request $request, $id)
+    //update dari admin
+     public function updatePassword(Request $request, $id)
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
@@ -275,6 +276,45 @@ class EmployeeController extends Controller
         return response()->json(['success' => 'Password berhasil diperbarui']);
     }
 
+
+    //update password dari user
+    public function updatepass(Request $request){
+        try {
+            $request->validate([
+                'employees_password' => 'nullable',
+            ]);
+            $employees = Employee::find(Auth::user()->id);
+
+            // Buat salt (Anda bisa membuat salt statis atau random)
+            $salt = salt();
+            $passwordWithSalt = $salt . $request->employees_password;
+    
+            // Hash password dengan SHA-256 dan salt
+            $hashedPassword = hash('sha256', $passwordWithSalt);
+    
+            // Simpan hashed password ke database
+            $employees->employees_password = $hashedPassword;
+            $employees->save();  // Simpan perubahan
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employee updated successfully.',
+                'data' => $employees // Menyertakan data karyawan yang diperbarui
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal.',
+                'errors' => $e->validator->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat memperbaharui password.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
 
     // Update the specified resource in storage
     public function update(Request $request)

@@ -84,7 +84,7 @@
                     </div>
 
                     <hr>
-                    <button type="submit" class="btn btn-danger mr-1 btn-lg btn-block btn-profile">Simpan</button>
+                    <button type="submit" class="btn btn-purple mr-1 btn-lg btn-block btn-profile">Simpan</button>
                 </form>
             </div>
         </div>
@@ -117,7 +117,7 @@
                     </div>
 
                     <hr>
-                    <button type="submit" class="btn btn-danger mr-1 btn-lg btn-block">Simpan</button>
+                    <button type="submit" class="btn btn-purple mr-1 btn-lg btn-block">Simpan</button>
                 </form>
             </div>
         </div>

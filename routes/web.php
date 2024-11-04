@@ -3,13 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\CallplanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\KunjunganController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\CutyController;
 use App\Http\Controllers\SettingController;
+use App\Models\Callplan;
 use App\Models\Employee;
 
 /*
@@ -57,24 +60,35 @@ Route::middleware(['auth:employee'])->group(function () {
 //     return view('home');
 // });
 
-Route::get('/home', [HomeController::class, 'index'])->name ('home');
-// routes/web.php
-Route::post('/load-home-counter', [HomeController::class, 'loadHomeCounter'])->name('load.home.counter');
-Route::get('absent', [PresenceController::class, 'userindex']);
-Route::post('/presences', [PresenceController::class, 'storeAbsence'])->name('presences.store');
-Route::get('cuty', [CutyController::class, 'userindex']);
-Route::get('history', [PresenceController::class, 'userindexhistory']);
-Route::get('profile', [EmployeeController::class, 'userprofile'])->name('userprofile');
+    Route::get('/home', [HomeController::class, 'index'])->name ('home');
+    // routes/web.php
+    Route::post('/load-home-counter', [HomeController::class, 'loadHomeCounter'])->name('load.home.counter');
+    Route::get('absent', [PresenceController::class, 'userindex']);
+    Route::post('/presences', [PresenceController::class, 'storeAbsence'])->name('presences.store');
+    Route::get('cuty', [CutyController::class, 'userindex']);
+    Route::get('history', [PresenceController::class, 'userindexhistory']);
+    Route::get('profile', [EmployeeController::class, 'userprofile'])->name('userprofile');
 
-Route::post('/history/load', [PresenceController::class, 'loadData'])->name('history.load');
-Route::post('/history/update', [PresenceController::class, 'updateHistory'])->name('history.update');
+    Route::post('/history/load', [PresenceController::class, 'loadData'])->name('history.load');
+    Route::post('/history/update', [PresenceController::class, 'updateHistory'])->name('history.update');
 
-Route::post('/cuty/load', [CutyController::class, 'loadDataCuty'])->name('cuty.load');
-Route::post('/cuty/update', [CutyController::class, 'update'])->name('cuty.update');
-Route::post('/cuty/store', [CutyController::class, 'store'])->name('cuty.store');
+    Route::post('/cuty/load', [CutyController::class, 'loadDataCuty'])->name('cuty.load');
+    Route::post('/cuty/update', [CutyController::class, 'update'])->name('cuty.update');
+    Route::post('/cuty/store', [CutyController::class, 'store'])->name('cuty.store');
 
-Route::post('profile/update', [EmployeeController::class, 'update'])->name('profile.update');
-Route::post('profile/updatephoto', [EmployeeController::class, 'updatePhoto'])->name('profile.updatephoto');
+    Route::get('/callplan', [CallplanController::class, 'userindex'])->name('callplan.index');
+    Route::post('/callplan/load', [CallplanController::class,'loadDataCallplan'])->name('callplan.load');
+    Route::post('/callplan/update',[CallplanController::class,'update'])->name('callplan.update');
+    Route::post('/callplan/store',[CallplanController::class,'store'])->name('callplan.store');
+
+    Route::get('/kunjungan', [KunjunganController::class, 'userindex'])->name('kunjungan.index');
+    Route::post('/kunjungan/load', [KunjunganController::class,'loadDataKunjungan'])->name('kunjungan.load');
+    Route::post('/kunjungan/update',[KunjunganController::class,'update'])->name('kunjungan.update');
+    Route::post('/kunjungan/store',[KunjunganController::class,'store'])->name('kunjungan.store');
+
+    Route::post('profile/update', [EmployeeController::class, 'update'])->name('profile.update');
+    Route::post('profile/updatepass', [EmployeeController::class, 'updatepass'])->name('profile.updatepass');
+    Route::post('profile/updatephoto', [EmployeeController::class, 'updatePhoto'])->name('profile.updatephoto');
 
 });
 
@@ -124,12 +138,14 @@ Route::middleware(['auth:user'])->group(function () {
     // Route::post('/prosesloginadmin', [AuthController::class, 'prosesloginadmin'])->name('prosesloginadmin');
     //Presence
     Route::get('/map', [PresenceController::class, 'showMap'])->name('map.show');
-    Route::get('/absensi', [PresenceController::class, 'index']);
+    Route::get('/absensi', [PresenceController::class, 'index'])->name('adminyofa.absensi.index');
+    Route::get('/loaddataabsen', [PresenceController::class, 'loadDataAbsen'])->name('absensi.load');
+    
     // Route::get('/absensi', [PresenceController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/create', [PresenceController::class, 'create'])->name('absensi.create');
     Route::get('/absensi/edit/{id}', [PresenceController::class, 'edit'])->name('absensi.edit');
     Route::get('/absensi/{id}', [PresenceController::class, 'show'])->name('absensi.show');
-    Route::post('/absensi', [PresenceController::class, 'store'])->name('absensi.store');
+    Route::post('/absensi/store', [PresenceController::class, 'store'])->name('absensi.store');
     Route::put('/absensi/{id}', [PresenceController::class, 'update'])->name('absensi.update');
     Route::delete('/absensi/{presence_id}', [PresenceController::class, 'destroy'])->name('absensi.destroy');
 
@@ -150,15 +166,16 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/settings/umum', [SettingController::class, 'loadSettingUmum'])->name('settings.umum');
     Route::get('/settings/profile', [SettingController::class, 'loadSettingProfile'])->name('settings.profile');
 
-    //route group adminyofa
-    Route ::group(['prefix' => 'adminyofa'], function () {
         Route::get('/jabatan', [PositionController::class, 'index'])->name('adminyofa.jabatan.index');
         Route::get('/jabatan/create', [PositionController::class, 'create'])->name('jabatan.create');
         Route::get('/jabatan/edit/{id}', [PositionController::class, 'edit'])->name('jabatan.edit');
         Route::get('/jabatan/{id}', [PositionController::class, 'show'])->name('jabatan.show');
         Route::post('/jabatan/store', [PositionController::class, 'store'])->name('jabatan.store');
-        Route::put('/jabatan/{id}', [PositionController::class, 'update'])->name('jabatan.update');
+        Route::put('/jabatan/{position_id}', [PositionController::class, 'update'])->name('jabatan.update');
         Route::delete('/jabatan/{position_id}', [PositionController::class, 'destroy'])->name('jabatan.destroy');
+    //route group adminyofa
+    Route ::group(['prefix' => 'adminyofa'], function () {
+
     });
 });
 

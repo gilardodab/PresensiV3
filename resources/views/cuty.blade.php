@@ -34,8 +34,12 @@
             </div> 
         </div>
         <div class="col-sm-4 col-md-4 justify-content-between">
-            <button type="button" class="btn btn-danger mt-1 btn-sortir-cuty"><ion-icon name="checkmark-outline"></ion-icon>Tampilkan</button>
-            <button type="button" class="btn btn-success mt-1 btn-clear-cuty"><ion-icon name="repeat-outline"></ion-icon> Clear</button>
+            <button type="button" class="btn btn-danger mt-1 btn-sortir-cuty">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M416 128L192 384l-96-96"/></svg>
+                Tampilkan</button>
+            <button type="button" class="btn btn-success mt-1 btn-clear-cuty">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="m320 120l48 48l-48 48"/><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M352 168H144a80.24 80.24 0 0 0-80 80v16m128 128l-48-48l48-48"/><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M160 344h208a80.24 80.24 0 0 0 80-80v-16"/></svg>
+                Clear</button>
             <button type="button" class="btn btn-warning mt-1" data-toggle="modal" data-target="#modal-add"><ion-icon name="add-circle-outline"></ion-icon> Tambah Cuti</button>
             
          </div>

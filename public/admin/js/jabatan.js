@@ -1,7 +1,12 @@
-$(document).ready(function() {
-    $('#swdatatable').dataTable({
+jQuery(document).ready(function() {
+    jQuery('#swdatatable').dataTable({
         "iDisplayLength": 20,
         "aLengthMenu": [[20, 30, 50, -1], [20, 30, 50, "All"]]
+    });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
     });
     
     
@@ -21,7 +26,7 @@ $(document).ready(function() {
             loading();
             e.preventDefault();
             $.ajax({
-                url:"sw-mod/jabatan/proses.php?action=add",
+                url:JabatanStoreUrl,
                 type: "POST",
                 data: new FormData(this),
                 processData: false,
@@ -57,11 +62,16 @@ $(document).ready(function() {
         }
         else{
             loading();
+            var formData = new FormData(this);
+            formData.append('_method', 'PUT');  // Append _method to simulate PUT request
             e.preventDefault();
             $.ajax({
-                url:"",
+                url: JabatanUpdateUrl + '/' + $('#txtid').val(),
                 type: "POST",
-                data: new FormData(this),
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Add CSRF token
+                },
+                data: formData,
                 processData: false,
                 contentType: false,
                 cache: false,
@@ -105,9 +115,11 @@ $(document).ready(function() {
                 if(value) {
                     loading();
                     $.ajax({  
-                         url:"sw-mod/jabatan/proses.php?action=delete",
-                         type:'POST',    
-                         data:{id:id},  
+                         url: JabatanDeleteUrl + '/' + id,
+                         type: 'DELETE',  // Use DELETE method
+                         headers: {
+                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Add CSRF token
+                         },
                         success:function(data){ 
                             if (data == 'success') {
                                 swal({title: 'Berhasil!', text: 'Data berhasil dihapus.!', icon: 'success', timer: 1500,});

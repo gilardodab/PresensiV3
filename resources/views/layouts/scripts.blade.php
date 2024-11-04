@@ -14,23 +14,36 @@
 <script src="{{ asset('assets/js/presensi.js') }}"></script>
 {{-- <script src="{{ asset('assets/__manifest.json') }}"></script>
 <script src="{{ asset('assets/__service-worker.json') }}"></script> --}}
-
+@if(Request::is('home') || Request::is('profile'))
 <script>
     var loadhomeUrl = "{{ route('load.home.counter') }}";
-    var loadhistoryUrl = "{{ route('history.load') }}";
-    var updatehistory = "{{ route('history.update') }}";
 
-    var loadcutyUrl = "{{ route('cuty.load') }}";
-    var storecutyUrl = "{{ route('cuty.store') }}";
-    var updatecutyUrl = "{{ route('cuty.update') }}";
 
     var updateprofileUrl = "{{ route('profile.update') }}";
+    var updatepassUrl = "{{ route('profile.updatepass') }}";
     var updatephotoprofileUrl = "{{ route('profile.updatephoto') }}";
+</script>
+@endif
+<script>
+var loadhistoryUrl = "{{ route('history.load') }}";
+</script>
+@if(Request::is('history') || Request::is('cuty') || Request::is('callplan') || Request::is('kunjungan'))
+<script>
 
+var updatehistory = "{{ route('history.update') }}";
+var loadcutyUrl = "{{ route('cuty.load') }}";
+var storecutyUrl = "{{ route('cuty.store') }}";
+var updatecutyUrl = "{{ route('cuty.update') }}";
 
+var loadcallplanUrl = "{{route('callplan.load')}}";
+var storecallplanUrl = "{{route('callplan.store')}}";
+var updatecallplanUrl = "{{route('callplan.update')}}";
+
+var loadkunjunganUrl = "{{route('kunjungan.load')}}";
+var storekunjunganUrl = "{{route('kunjungan.store')}}";
+var updatekunjunganUrl = "{{route('kunjungan.update')}}";
 
 </script>
-@if(Request::is('history') || Request::is('cuty'))
 <script src="{{ asset('assets/js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
@@ -109,46 +122,66 @@
                 _token: '{{ csrf_token() }}' // Sertakan CSRF token untuk keamanan
             },
             success: function(response) {
-                var resultStatus = response.status;
-                var resultMessage = response.message;
+                    var resultStatus = response.status;
+                    var resultMessage = response.message;
 
-                if(resultStatus === 'success') {
-                    swal({
-                        title: 'Berhasil!',
-                        text: resultMessage,
-                        icon: 'success',
-                        timer: 3500,
-                    });
-                    setTimeout(function() {
-                        window.location.href = homeUrl;
-                    }, 3600);
-                } else {
-                    swal({
-                        title: 'Oops!',
-                        text: resultMessage,
-                        icon: 'error',
-                        timer: 3500,
-                    });
-                    setTimeout(function() {
-                        window.location.href = homeUrl;
-                    }, 3600);
-                }
-            },
+                    if(resultStatus === 'success') {
+                        swal({
+                            title: 'Berhasil!',
+                            text: resultMessage,
+                            icon: 'success',
+                            buttons: {
+                                confirm: {
+                                    text: 'OK',
+                                    value: true,
+                                    visible: true,
+                                    className: "",
+                                    closeModal: true
+                                }
+                            }
+                        }).then((value) => {
+                            // Redirect ke home setelah pengguna menekan OK
+                            window.location.href = homeUrl;
+                        });
+                    } else {
+                        swal({
+                            title: 'Oops!',
+                            text: resultMessage,
+                            icon: 'error',
+                            buttons: {
+                                confirm: {
+                                    text: 'OK',
+                                    value: true,
+                                    visible: true,
+                                    className: "",
+                                    closeModal: true
+                                }
+                            }
+                        }).then((value) => {
+                            // Redirect ke home setelah pengguna menekan OK
+                            window.location.href = homeUrl;
+                        });
+                    }
+                },
             error: function(xhr) {
-                console.log("Error response: ", xhr.responseText); // Tambahkan log untuk mengetahui error dari server
-                swal({
-                    title: 'Error!',
-                    text: 'Terjadi kesalahan saat absen.' + xhr.responseText,
-                    icon: 'error',
-                    timer: 3500,
-                });
-                    // Ambil URL home dari Laravel
-                    
-
-                setTimeout(function() {
-                    // Redirect ke home
-                    window.location.href = homeUrl;
-                }, 3600); // Timer untuk redirect (sesuai timer swal)
+                    console.log("Error response: ", xhr.responseText); // Tambahkan log untuk mengetahui error dari server
+                    swal({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat absen.' + xhr.responseText,
+                        icon: 'error',
+                        buttons: {
+                            confirm: {
+                                text: 'OK',
+                                value: true,
+                                visible: true,
+                                className: "",
+                                closeModal: true
+                            }
+                        }
+                    }).then((value) => {
+                        // Redirect ke home setelah pengguna menekan OK
+                        window.location.href = homeUrl;
+                    });
             }
         });
     });

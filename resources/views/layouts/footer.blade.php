@@ -1,9 +1,4 @@
-<div class="wrapper">
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Version</b> 2.3.8
-    </div>
-    <strong>Copyright &copy; 2023-2024 <a href="http://presensi.com">Laksa Techno</a>.</strong> All rights
-    reserved.
-  </footer>
-</div>
+<footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+  <p class="text-muted mb-1 mb-md-0">Copyright © 2023 <a href="https://www.nobleui.com" target="_blank">YOFA GROUP</a>.</p>
+  <p class="text-muted">Handcrafted With <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i></p>
+</footer>

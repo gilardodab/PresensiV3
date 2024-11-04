@@ -18,54 +18,74 @@ use Carbon\Carbon;
 class PresenceController extends Controller
 {
     //
-    public function index()
-    {
-        $employees = Employee::with('position', 'shift', 'building')->get();
-        $month_en = Carbon::now()->locale('en')->monthName;
+    // public function index()
+    // {
+    //     $employees = Employee::with('position', 'shift', 'building')->get();
+    //     $month_en = Carbon::now()->locale('en')->monthName;
         
-        // Dapatkan nilai bulan dan tahun saat ini sebagai default
-        $currentMonth = Carbon::now()->format('m'); 
-        $currentYear = Carbon::now()->format('Y'); 
+    //     // Dapatkan nilai bulan dan tahun saat ini sebagai default
+    //     $currentMonth = Carbon::now()->format('m'); 
+    //     $currentYear = Carbon::now()->format('Y'); 
     
-        // Ambil parameter dari request, jika tidak ada gunakan default bulan dan tahun saat ini
-        $op = request()->get('op');
-        $id = request()->get('id');
-        $month = request()->get('month', $currentMonth);  // Gunakan bulan saat ini jika tidak ada
-        $year = request()->get('year', $currentYear);     // Gunakan tahun saat ini jika tidak ada
+    //     // Ambil parameter dari request, jika tidak ada gunakan default bulan dan tahun saat ini
+    //     $op = request()->get('op');
+    //     $id = request()->get('id');
+    //     $month = request()->get('month', $currentMonth);  // Gunakan bulan saat ini jika tidak ada
+    //     $year = request()->get('year', $currentYear);     // Gunakan tahun saat ini jika tidak ada
     
-        if ($op == 'views') {
-            // Ambil data karyawan berdasarkan ID
-            $employees = Employee::with('position', 'shift', 'building')->find($id);
+    //     if ($op == 'views') {
+    //         // Ambil data karyawan berdasarkan ID
+    //         $employees = Employee::with('position', 'shift', 'building')->find($id);
     
-            if (!$employees) {
-                return response()->json(['message' => 'Employee not found'], 404);
-            }
+    //         if (!$employees) {
+    //             return response()->json(['message' => 'Employee not found'], 404);
+    //         }
     
-            // Ambil presensi karyawan berdasarkan bulan dan tahun
+    //         // Ambil presensi karyawan berdasarkan bulan dan tahun
             
-            $presences = Presence::where('employees_id', $employees->id)
-                                ->whereMonth('presence_date', $month)
-                                ->whereYear('presence_date', $year)
-                                ->get();
+    //         $presences = Presence::where('employees_id', $employees->id)
+    //                             ->whereMonth('presence_date', $month)
+    //                             ->whereYear('presence_date', $year)
+    //                             ->get();
     
-            if ($presences->isEmpty()) {
-                return response()->json(['message' => 'Presences not found'], 404);
-            }
+    //         // if ($presences->isEmpty()) {
+    //         //     return response()->json(['message' => 'Presences not found'], 404);
+    //         // }
     
-            $shift = $employees->shift; // Ambil shift dari relasi
+    //         $shift = $employees->shift; // Ambil shift dari relasi
     
-            return view('adminyofa.absensi.index', compact('employees', 'presences', 'shift', 'op', 'id', 'month_en', 'month', 'year'));
-        } else {
-            // Jika $op bukan 'views', ambil semua karyawan
-            $employees = Employee::with('position', 'shift', 'building')->get();
+    //         return view('adminyofa.absensi.index', compact('employees', 'presences', 'shift', 'op', 'id', 'month_en', 'month', 'year'));
+    //     } else {
+    //         // Jika $op bukan 'views', ambil semua karyawan
+    //         $employees = Employee::with('position', 'shift', 'building')->get();
     
-            if ($employees->isEmpty()) {
-                return response()->json(['message' => 'Employees not found'], 404);
-            }
+    //         if ($employees->isEmpty()) {
+    //             return response()->json(['message' => 'Employees not found'], 404);
+    //         }
     
-            return view('adminyofa.absensi.index', compact('employees', 'op', 'id', 'month_en', 'currentMonth', 'currentYear'));
-        }
+    //         return view('adminyofa.absensi.index', compact('employees', 'op', 'id', 'month_en', 'currentMonth', 'currentYear'));
+    //     }
+    // }
+
+    public function index(){
+        $employees = Employee::with('position', 'shift', 'building')->get();
+        return view('adminyofa.absensi.index', compact('employees'));
     }
+
+    public function loadDataAbsen(Request $request)
+    {
+        $id = $request->input('id');
+        $month = $request->input('month') ?: date('m');
+        $year = $request->input('year') ?: date('Y');
+
+        $presences = Presence::where('employees_id', $id)
+            ->whereMonth('presence_date', $month)
+            ->whereYear('presence_date', $year)
+            ->get();
+
+        return view('adminyofa.absensi.partials.absensi_table', compact('presences'));
+    }
+    
     
     
     public function showMap(Request $request)
@@ -227,9 +247,14 @@ class PresenceController extends Controller
     }
 
     // Display the specified resource
-    public function show(Presence $presence)
+    public function show($id)
     {
-        return view('presences.show', compact('presence'));
+        $employee = Employee::with('position')->find($id);
+        if (!$employee) {
+            return redirect()->route('absensi.index')->with('error', 'Data karyawan tidak ditemukan');
+        }
+
+        return view('adminyofa.absensi.detail', compact('employee'));
     }
 
     // Show the form for editing the specified resource

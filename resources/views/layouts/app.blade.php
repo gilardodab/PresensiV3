@@ -36,13 +36,13 @@
 </head>
 
 <body>
-    <div class="loading">
+    {{-- <div class="loading">
         <div class="spinner-border text-primary" role="status"></div>
-    </div>
+    </div> --}}
     <!-- loader -->
-    <div id="loader">
+    {{-- <div id="loader">
         <img src="{{ url('/assets/img/logo-icon.png') }}" alt="icon" class="loading-icon">
-    </div>
+    </div> --}}
     <!-- * loader -->
     @include('layouts.appheader')
     @yield('content')

@@ -8786,6 +8786,18 @@ a.badge-dark {
     border-color: #FF396F;
     opacity: 0.5; }
 
+    .btn-purple {
+      background: #90319a !important;
+      border-color: #90319a !important;
+      color: #FFFFFF !important; }
+      .btn-purple:hover, .btn-purple:focus, .btn-purple:active, .btn-purple.active {
+        background: #890e96 !important;
+        border-color: #890e96 !important; }
+      .btn-purple.disabled, .btn-purple:disabled {
+        background: #90319a;
+        border-color: #90319a;
+        opacity: 0.5; }
+
 .btn-warning {
   color: #fff !important;
   background: #FFB400 !important;
