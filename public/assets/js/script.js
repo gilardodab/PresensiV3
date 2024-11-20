@@ -303,6 +303,25 @@ loadData();
         });
     }
 
+    loadDataKunjunganRiwayat();
+
+    function loadDataKunjunganRiwayat() {
+
+        $.ajax({
+            url: loadhistoryKunjunganUrl,
+            type: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}", // Menambahkan CSRF token di sini
+            },
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(data) {
+                $('.loaddatakunjunganriwayat').html(data);
+            }
+        });
+    }
+
     $('.btn-clear').click(function (e) {
         loadData();
         $('.start_date').val('');
@@ -387,7 +406,54 @@ loadData();
             },
         });
     });
+
+     /* ------------------- UPDATE DATA HISTORY KUNJUNGAN ------------------------- */
+     $(document).on('click', '.modal-update-history-kunjungan', function () {
+        // Tampilkan modal
+        $('#modal-show-kunjungan').modal('show');
     
+        // Ambil data dari tombol
+        var kunjungan_id = $(this).data("id");
+        var status = $(this).data("status");
+        var information = $(this).data("informasi");
+        var tanggal = $(this).data("tanggal-kunjungan");
+    
+        // Set nilai ke dalam form modal
+        $('#kunjungan_id').val(kunjungan_id); // Pastikan ada input dengan ID ini
+        $('#status_kunjungan').val(status); // Pastikan ada input dengan ID ini
+        $('#informasi').val(information); // Pastikan ada input dengan ID ini
+        $('.kunjungan-tanggal').html(tanggal); // Pastikan ada elemen dengan class ini
+    });
+    
+
+    /* ---------- UPDATE HISTORY-----------------*/
+    $('#update-history-kunjungan').submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: updatehistory,
+            type: "POST",
+            data: $(this).serialize(),
+            beforeSend: function () { 
+                loading();
+            },
+            success: function (response) {
+                if (response.status == 'success') {
+                    swal({ title: 'Berhasil!', text: 'Absensi berhasil diperbarui!', icon: 'success', timer: 2000 });
+                    $('#modal-show-kunjungan').modal('hide');
+                    loadData();
+                } else {
+                    swal({ title: 'Oops!', text: 'Terjadi kesalahan.', icon: 'error', timer: 2000 });
+                }
+            },
+            complete: function () {
+                $(".loading").hide();
+                $('#modal-show-kunjungan').modal('hide');
+            },
+        });
+    });
+
+
     
     
 //         /* --------------------------------
@@ -684,7 +750,7 @@ loadData();
        $(document).on('click', '.btn-update-callplan', function(){
             $('#modal-update').modal('show');
             var id = $(this).attr("data-id"); 
-            document.getElementById('city-id').value = id;
+            document.getElementById('callplan-id').value = id;
     
             var start = $(this).attr("data-start"); 
             document.getElementById('tanggal-cp').value = start;
@@ -709,80 +775,95 @@ loadData();
 //         //     /*var cuty_description = $(this).attr("data-date"); 
 //         //     $('.status-date').html(tanggal);*/
 //         // });
-//         $(document).on('click', '.btn-delete-callplan', function(){ 
-//             var id = $(this).attr("data-id");
-//               swal({
-//                 text: "Anda yakin menghapus data ini?",
-//                 icon: "warning",
-//                   buttons: {
-//                     cancel: true,
-//                     confirm: true,
-//                   },
-//                 value: "delete",
-//               })
-    
-//               .then((value) => {
-//                 if(value) {
-//                     loading();
-//                     $.ajax({  
-//                          url:"",
-//                          type:'POST',    
-//                          data:{id:id},  
-//                         success:function(data){ 
-//                             if (data == 'success') {
-//                                 swal({title: 'Berhasil!', text: 'Data berhasil dihapus.!', icon: 'success', timer: 1500,});
-//                                 setTimeout(function(){ location.reload(); }, 1500);
-//                             } else {
-//                                 swal({title: 'Gagal!', text: data, icon: 'error', timer: 1500,});
-                                
-//                             }
-//                          }  
-//                     });  
-//                } else{  
-//                 return false;
-//             }  
-//         });
+            $(document).on('click', '.btn-delete-callplan', function() { 
+                var callplan_id = $(this).data("id");
+
+                swal({
+                    text: "Anda yakin ingin menghapus data ini?",
+                    icon: "warning",
+                    buttons: {
+                        cancel: true,
+                        confirm: true,
+                    },
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        loading();
+                        $.ajax({
+                            url: deletecallplanUrl,
+                            type: 'POST',
+                            data: { callplan_id: callplan_id },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    swal({ title: 'Berhasil!', text: response.message, icon: 'success', timer: 1500 });
+                                    setTimeout(function() { location.reload(); }, 1500);
+                                } else {
+                                    swal({ title: 'Gagal!', text: response.message, icon: 'error', timer: 1500 });
+                                }
+                            },
+                            error: function(xhr) {
+                                swal({ title: 'Gagal!', text: xhr.responseJSON?.message || 'Terjadi kesalahan', icon: 'error', timer: 1500 });
+                            },
+                            complete: function() {
+                                $(".loading").hide();
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            });
+
 //     }); 
 
 //         /* ----------- UPDATE DATA CALLPLAN ------------*/
-//         $('#form-update-callplan').submit(function (e) {
-//             e.preventDefault();
-//             if($("#tanggal_cp").val()=="" ){  
-//                  swal({title:'Oops!', text: 'Harap bidang inputan tidak boleh ada yang kosong.!', icon: 'error', timer: 1500,});
-//                 return false;
-//                 loading();
-//             }
-//             else{
-//                 loading();
-//                 $.ajax({
-//                     url:"",
-//                     type: "POST",
-//                     data: new FormData(this),
-//                     processData: false,
-//                     contentType: false,
-//                     cache: false,
-//                     async: false,
-//                     beforeSend: function () { 
-//                       loading();
-//                     },
-//                     success: function (data) {
-//                         if (data == 'success') {
-//                             swal({title: 'Berhasil!', text: 'Data Call Plan berhasil diubah!', icon: 'success', timer: 2500,});
-                            
-//                             loadDataCallPlan();
-//                             $('#modal-update').modal('hide');
-//                             $('#form-update-callplan').trigger("reset");
-//                         } else {
-//                             swal({title: 'Oops!', text: data, icon: 'error', timer: 1500,});
-//                         }
-    
-//                     },
-//                     complete: function () {
-//                         $(".loading").hide();
-//                     },
-//                 });
-//             }
-//         }); 
+            $('#form-update-callplan').submit(function (e) {
+                e.preventDefault();
+                const tanggalCP = formatDateToYMD($('#tanggal_cp').val());
+                var formData = new FormData(this);
+                formData.set('tanggal-cp', tanggalCP);
+                if ($("#tanggal-cp").val().trim() === "") { // Periksa tanggal berdasarkan ID yang benar
+                    swal({title: 'Oops!', text: 'Harap semua bidang input diisi.', icon: 'error', timer: 1500});
+                    return false;
+                } else {
+                    loading();
+                    $.ajax({
+                        url: updatecallplanUrl,
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        beforeSend: function () {
+                            loading();
+                        },
+                        success: function (response) {
+                            if (response.status === 'success') {
+                                swal({title: 'Berhasil!', text: 'Data Call Plan berhasil diubah!', icon: 'success', timer: 2500});
+                                loadDataCallPlan();
+                                $('#modal-update').modal('hide');
+                                $('#form-update-callplan').trigger("reset");
+                            } else {
+                                swal({title: 'Oops!', text: response.message || 'Terjadi kesalahan', icon: 'error', timer: 1500});
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            swal({title: 'Oops!', text: errorThrown, icon: 'error', timer: 1500});
+                        },
+                        complete: function () {
+                            $(".loading").hide();
+                        }
+                    });
+                }
+            });
+
         
 //             $('.btn-printcallplan').click(function (e) {
 //         var from        = $('.start_date').val();
@@ -804,6 +885,8 @@ loadData();
 //         }
 //         window.open(url, '_blank');
 // });
+        
+
 
 
 //     /* --------- LOAD DATA HISTORY Marketing---------------*/
@@ -818,6 +901,56 @@ loadData();
                 }
             });
         }
+
+ 
+
+        $(document).on('click', '.btn-update-kunjungan', function() { 
+            var kunjungan_id = $(this).data("kunjungan-id");
+            var outlet = $(this).data("nama-outlet");
+        
+            swal({
+                text: `Anda yakin ingin Presensi di Tempat ${outlet} dengan ID Kunjungan ${kunjungan_id}?`,
+                icon: "warning",
+                buttons: {
+                    cancel: true,
+                    confirm: true,
+                },
+                dangerMode: true,
+            })
+            .then((value) => {
+                if (value) {
+                    loading(); // Assume this triggers a loading indication
+                    $.ajax({
+                        url: selfie, // Replace 'selfie' with the actual URL for the update action
+                        type: 'POST',
+                        data: { kunjungan_id: kunjungan_id },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                // Redirect to the provided URL if kunjungan_id exists
+                                window.location.href = response.redirect_url;
+                            } else {
+                                // Show error if response indicates failure
+                                swal({ title: 'Gagal!', text: response.message, icon: 'error', timer: 1500 });
+                            }
+                        },
+                        error: function(xhr) {
+                            swal({ title: 'Gagal!', text: xhr.responseJSON?.message || 'Terjadi kesalahan', icon: 'error', timer: 1500 });
+                        },
+                        complete: function() {
+                            $(".loading").hide(); // Hide loading indication
+                        }
+                    });
+                }
+            });
+        });
+
+        
+        
+        
+        
 
 //         document.addEventListener('DOMContentLoaded', function() {
 //         var outletInput = document.querySelector('.outlet');
@@ -841,28 +974,7 @@ loadData();
 //         $('.start_date').val();
 //     });
 
-//     // $('.btn-sortirr').click(function (e) {
-//     //         var from = $('.start_date').val();
-//     //         var to   = $('.end_date').val();
 
-//     //        $.ajax({
-//     //           url:"./sw-proses?action=historymrkt",
-//     //           method:"POST",
-//     //           data:{from:from,to:to},
-//     //           dataType:"text",
-//     //           cache: false,
-//     //           async: false,
-//     //             beforeSend: function () { 
-//     //              loading();
-//     //             },
-//     //             success: function (data) {
-//     //                 $('.loaddatamkt').html(data);
-//     //             },
-//     //         complete: function () {
-//     //             $(".loading").hide();
-//     //         },
-//     //     });
-//     // });
 
 //     $('.btn-print').click(function (e) {
 //             var from        = $('.start_date').val();
@@ -1079,6 +1191,4 @@ loadData();
 //         $(".modal-title-name").html(name);
 //         document.getElementById("iframea-map").innerHTML ='<iframe src="./action/map.php?latitude='+latitude+'&longitude='+longitude+'&name='+name+'" frameborder="0" width="100%" height="400px" marginwidth="0" marginheight="0" scrolling="no">';
 //     });
-    
-
-    });
+});

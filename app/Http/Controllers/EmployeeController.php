@@ -208,11 +208,7 @@ class EmployeeController extends Controller
         $employee->shift_id = $request->shift_id;
         $employee->building_id = $request->building_id;
 
-        // Handle file upload jika ada
-        // if ($request->hasFile('photo')) {
-        //     $filePath = $request->file('photo')->store('employees_photos', 'public');
-        //     $employee->photo = $filePath;
-        // }
+
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
 

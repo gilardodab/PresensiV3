@@ -33,6 +33,7 @@
         <link rel="stylesheet" href="{{ url('/assets/js/plugins/datatables/dataTables.bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url('/assets/js/plugins/magnific-popup/magnific-popup.css') }}">
     @endif
+    <link rel="manifest" href="__manifest.json"> 
 </head>
 
 <body>
@@ -48,6 +49,7 @@
     @yield('content')
     @include('layouts.appfooter')
     @include('layouts.scripts')
+    @stack('custom-scripts')
 </body>
 </html>
 

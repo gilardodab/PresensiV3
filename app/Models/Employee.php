@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens; // Trait yang benar
 use Illuminate\Notifications\Notifiable;
-//include Building
 use App\Models\Building;
 
 class Employee extends Authenticatable
 {
-    use Notifiable;
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable; // Pastikan menggunakan HasApiTokens di sini
 
     protected $guarded = [];
 

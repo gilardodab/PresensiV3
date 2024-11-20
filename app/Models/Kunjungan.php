@@ -20,7 +20,7 @@ class Kunjungan extends Model
         'status_kunjungan',
         'latitude_longtitude_in',
         'information',
-        'callplan',
+        'callplan_id',
         'description',
     ];
 
@@ -28,5 +28,10 @@ class Kunjungan extends Model
     public function employees()
     {
         return $this->belongsTo(Employee::class, 'employees_id');
+    }
+
+    public function callplan()
+    {
+        return $this->belongsTo(Callplan::class, 'callplan_id', 'callplan_id');
     }
 }

@@ -13,7 +13,7 @@
             </div>
 
             <div class="right">
-                @if($row_callplan->created_at->diffInDays(now()) < 2)
+                {{-- @if($row_callplan->created_at->diffInDays(now()) < 2) --}}
                 <button type="button" class="btn btn-success btn-sm btn-update-callplan" 
                         data-id="{{ $row_callplan->callplan_id }}" 
                         data-start="{{ tanggal_ind($row_callplan->tanggal_cp) }}" 
@@ -21,12 +21,14 @@
                         data-description="{{ $row_callplan->description }}">
                     <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                 </button>
-                @else
+                {{-- @else
                 <button type="button" class="btn btn-success btn-sm access-failed">
                     <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                 </button>
-                @endif
-            
+                @endif --}}
+                <button type="button" class="btn btn-danger btn-sm btn-delete-callplan" 
+                data-id="{{$row_callplan->callplan_id}}"
+                onclick="confirmDelete({{$row_callplan->callplan_id}})"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
             </div>
         </div>
     @endforeach

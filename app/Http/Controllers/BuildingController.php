@@ -62,17 +62,10 @@ class BuildingController extends Controller
         return redirect()->route('adminyofa.kantor.index');
     }
     
-    
-
-    // Display the specified resource
-    public function show(Building $building)
-    {
-        return view('adminyofa.kantor.show', compact('building'));
-    }
-
     // Show the form for editing the specified resource
-    public function edit(Building $building)
+    public function edit($building_id)
     {
+        $building = Building::findOrFail($building_id);
         return view('adminyofa.kantor.edit', compact('building'));
     }
     

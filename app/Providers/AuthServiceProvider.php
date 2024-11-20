@@ -33,6 +33,15 @@ class AuthServiceProvider extends ServiceProvider
 
         //view global user 
         View::composer('*', function ($view) {
+            date_default_timezone_set('Asia/Jakarta');
+            $date     = DATE('Y-m-d');
+            $day      = DATE('d');
+            $day_en   = DATE('l');
+            $month_en = DATE('F');
+            $month    = DATE('m');
+            $year     = DATE('Y');
+            $time     = DATE('H:i:s');
+            $timeNow  = DATE('Y-m-d H:i:s');
             $today = now()->toDateString();
             $currentMonth = now()->month;
             $currentYear = now()->year;
@@ -67,6 +76,13 @@ class AuthServiceProvider extends ServiceProvider
             $view->with('absentDay', $absentDay);
             $view->with('cutyRequests', $cutyRequests);
             $view->with('settings', $settings);
+            $view->with('date', $date);
+            $view->with('day', $day);
+            $view->with('day_en', $day_en);
+            $view->with('month_en', $month_en);
+            $view->with('time', $time);
+            $view->with('timeNow', $timeNow);
+
         });
     }
 }

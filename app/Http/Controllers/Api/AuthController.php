@@ -7,58 +7,108 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\User;
+use App\Models\Employee;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
-
-        return response()->json(['token' => $token], 201);
-    }
-
+   /**
+     * @OA\Post(
+     *     path="/yf/login",
+     *     tags={"Auth"},
+     *     summary="Login user",
+     *     description="Login user yang sudah terdaftar",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil login"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Login gagal"
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        try {
+            $salt = salt();
+    
+            // Mendapatkan employee berdasarkan email
+            $employee = Employee::where('employees_email', $request->email)->first();
+    
+            // Jika email tidak ditemukan, kembalikan respons "Email salah"
+            if (!$employee) {
+                return response()->json(['status' => 'error', 'message' => 'Email salah'], 404);
+            }
+    
+            // Gabungkan salt dengan password yang dimasukkan
+            $passwordWithSalt = $salt . $request->password;
+    
+            // Hash password dengan SHA-256
+            $hashedPassword = hash('sha256', $passwordWithSalt);
+    
+            // Cek apakah password yang di-hash cocok dengan password di database
+            if ($hashedPassword !== $employee->employees_password) {
+                return response()->json(['status' => 'error', 'message' => 'Password salah'], 401);
+            }
+    
+            // Jika email dan password cocok, buat token autentikasi untuk employee
+            $token = $employee->createToken('Personal Access Token')->plainTextToken;
+    
+            return response()->json(['status' => 'success', 'message' => 'Login successful', 'token' => $token], 200);
+    
+        } catch (\Exception $e) {
+            // Penanganan error jika ada masalah koneksi atau error lainnya
+            return response()->json(['status' => 'error', 'message' => 'Failed to connect to server'], 500);
         }
-
-        if (!Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $user = Auth::user();
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
-
-        return response()->json(['token' => $token], 200);
     }
-
+    
+    
+        /**
+     * @OA\Post(
+     *     path="/yf/logout",
+     *     tags={"Auth"},
+     *     summary="Logout user",
+     *     description="Logout user yang sedang login",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil logout",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Logout successful")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="User tidak terautentikasi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="User not authenticated")
+     *         )
+     *     )
+     * )
+     */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Logged out successfully'], 200);
+        // Cek apakah pengguna terautentikasi
+        if ($request->user()) {
+            // Hapus token dari request
+            $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete();
+    
+            return response()->json(['status' => 'success', 'message' => 'Logout successful'], 200);
+        }
+    
+        return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
     }
+    
+    
+    
 }

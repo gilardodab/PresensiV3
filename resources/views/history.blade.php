@@ -64,7 +64,7 @@
                                     <button type="button" class="btn btn-danger mt-1 btn-sortir btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M416 128L192 384l-96-96"/></svg>
                                         Tampilkan</button>
-                                    <button type="button" class="btn btn-success mt-1 btn-clear btn-sm"><ion-icon name="repeat-outline"></ion-icon></button>
+                                    <button type="button" class="btn btn-success mt-1 btn-clear btn-sm"><ion-icon name="repeat-outline"></ion-icon>Resfresh</button>
                                 </div>
                             </div>
                             
@@ -163,7 +163,127 @@
 
 
                     <div class="tab-pane fade " id="kunjungan" role="tabpanel">
-
+                        <div class="row text-center">
+                            <div class="col-sm-4 col-md-4">
+                                <div class="form-group basic">
+                                    <div class="input-wrapper">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control datepicker start_date" name="start_date" value="" placeholder="Tanggal Awal" required>
+                                            <div class="input-group-addon">
+                                                <ion-icon name="calendar-outline"></ion-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="col-sm-4 col-md-4">
+                                <div class="form-group basic">
+                                    <div class="input-wrapper">
+                                        <div class="input-group">
+                                            <input type="text" name="end_date" class="form-control datepicker end_date" value="{{tanggal_ind(date('Y-m-d'))}}" placeholder="Tanggal Akhir">
+                                            <div class="input-group-addon">
+                                                <ion-icon name="calendar-outline"></ion-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="col-sm-4 col-md-4 justify-content-between">
+                                <button type="button" class="btn btn-danger mt-1 btn-sortir-kunjungan btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M416 128L192 384l-96-96"/></svg>
+                                    Tampilkan</button>
+                                <button type="button" class="btn btn-success mt-1 btn-clear btn-sm"><ion-icon name="repeat-outline"></ion-icon>Refresh</button>
+                            </div>
+                        </div>
+                        
+                        
+                            {{-- <div class="section-title">Data Absensi</div> --}}
+                                {{-- <div class="table-responsive"> --}}
+                                    <div class="loaddatakunjunganriwayat"></div>
+                                {{-- </div> --}}
+                            <div class="alert alert-warning mt-2" role="alert">
+                                <ion-icon name="alert-circle-outline"></ion-icon> Untuk melihat foto absen silahkan klik pada waktu masuk/pulang.
+                            </div>
+                        
+                    
+                    
+                        <!-- resources/views/partials/modal_print.blade.php -->
+                        <div class="modal fade action-sheet inset" id="modal-print" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Cetak / Export</h5>
+                                        <a href="javascript:void(0);" class="close" style="position: absolute;right:15px;top: 10px;" data-dismiss="modal" aria-hidden="true">
+                                            <ion-icon name="close-outline"></ion-icon>
+                                        </a>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="action-sheet-content">
+                                            <div class="form-group basic">
+                                                <div class="input-wrapper">
+                                                    <label class="label">Pilih Tipe</label>
+                                                    <select class="form-control custom-select type" name="type" required>
+                                                    <option value="pdf">PDF</option>
+                                                    <option value="excel">EXCEL</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group basic">
+                                                <button type="button" class="btn btn-danger btn-block btn-lg mt-2 btn-print">
+                                                    <ion-icon name="print-outline"></ion-icon> Cetak
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        <div class="modal fade action-sheet inset" id="modal-show-kunjungan" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index:10000">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <!-- Header Modal -->
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            Kunjungan Tanggal: 
+                                            <span class="kunjungan-tanggal badge badge-success"></span>
+                                        </h5>
+                                        <a href="javascript:void(0);" class="close" data-dismiss="modal" aria-hidden="true" style="position: absolute; right:15px; top: 10px;">
+                                            <ion-icon name="close-outline"></ion-icon>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Body Modal -->
+                                    <div class="modal-body">
+                                        <div class="action-sheet-content">
+                                            <form id="update-history-kunjungan" method="POST" action="{{ route('history.update') }}">
+                                                @csrf
+                                                <input type="hidden" name="kunjungan_id" id="kunjungan_id" readonly>
+                                                
+                                                <!-- Input Information -->
+                                                <div class="form-group basic">
+                                                    <label class="label" for="information">Keterangan</label>
+                                                    <div class="input-wrapper">
+                                                        <textarea id="informasi" rows="2" class="form-control" name="information"  placeholder="Keterangan"></textarea>
+                                                    </div>
+                                                    <small class="form-text text-muted">Kosongkan jika tidak memberi keterangan.</small>
+                                                </div>
+                                                
+                                                <!-- Submit Button -->
+                                                <div class="form-group basic">
+                                                    <button type="submit" class="btn btn-danger btn-block btn-lg">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>     
             </div>
@@ -177,7 +297,7 @@
 </div>
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
 <script>
     loadData();
 
@@ -246,6 +366,49 @@
         });
     });
 
+    // loadDataKunjunganRiwayat();
+
+    //     function loadDataKunjunganRiwayat() {
+    //         $.ajax({
+    //             url: '{{ route('kunjungan.loadriwayat')}}',
+    //             type: 'POST',
+    //             data: {
+    //                 _token: "{{ csrf_token() }}"
+    //             },
+    //             success: function(data) {
+    //                 $('.loaddatakunjunganriwayat').html(data);
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error("Error occurred while loading data: ", error);
+    //                 alert('Terjadi kesalahan dalam memuat data kunjungan riwayat.');
+    //             }
+    //         });
+    //     }
+
+    //     $('.btn-sortir-kunjungan').click(function (e) {
+    //         var from = $('.start_date').val();
+    //         var to   = $('.end_date').val();
+
+    //         $.ajax({
+    //             url: '{{ route('kunjungan.loadriwayat')}}',
+    //             method:"POST",
+    //             data: {
+    //             from: from,
+    //             to: to,
+    //             _token: '{{ csrf_token() }}'
+    //         }
+    //                 beforeSend: function () { 
+    //                 loading();
+    //                 },
+    //                 success: function (data) {
+    //                     $('.loaddatakunjunganriwayat').html(data);
+    //                 },
+    //             complete: function () {
+    //                 $(".loading").hide();
+    //             },
+    //         });
+    //     });
+
 
 </script>
-@endpush
+@endpush --}}

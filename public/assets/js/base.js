@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // Version:        2.1
-// Template name:  E_Presensi - Wallet & Banking HTML Mobile Template
-// Item URL :      https://themeforest.net/item/E_Presensi-wallet-banking-html-mobile-template/25738217
+// Template name:  Presensi - Wallet & Banking HTML Mobile Template
+// Item URL :      https://themeforest.net/item/Presensi-wallet-banking-html-mobile-template/25738217
 // Author:         Bragher
 // Author URL :    https://themeforest.net/user/bragher
 //-----------------------------------------------------------------------
@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------
 // Template Settings
 //-----------------------------------------------------------------------
-const E_Presensi = {
+const Presensi = {
     //-------------------------------------------------------------------
     // PWA Settings
     PWA: {
@@ -64,7 +64,7 @@ var loader =  document.getElementById('loader');
 //-----------------------------------------------------------------------
 // Service Workers
 //-----------------------------------------------------------------------
-// if (E_Presensi.PWA.enable) {
+// if (Presensi.PWA.enable) {
 //     if ('serviceWorker' in navigator) {
 //         navigator.serviceWorker.register('__service-worker.js')
 //             .then(reg => console.log('service worker registered'))
@@ -98,7 +98,7 @@ function goBackAnimation() {
 var goBackButton = document.querySelectorAll(".goBack");
 goBackButton.forEach(function (el) {
     el.addEventListener("click", function () {
-        if (E_Presensi.Animation.goBack) {
+        if (Presensi.Animation.goBack) {
             goBackAnimation();
         }
         else {
@@ -112,7 +112,7 @@ goBackButton.forEach(function (el) {
 
 //-----------------------------------------------------------------------
 // RTL (Right to Left)
-if (E_Presensi.RTL.enable) {
+if (Presensi.RTL.enable) {
     var pageHTML = document.querySelector("html")
     pageHTML.dir = "rtl"
     document.querySelector("body").classList.add("rtl-mode")
@@ -441,12 +441,12 @@ function androidAddtoHome() {
 }
 function AddtoHome(time, once) {
     if (once) {
-        var AddHomeStatus = localStorage.getItem("E_PresensiAddtoHome");
+        var AddHomeStatus = localStorage.getItem("PresensiAddtoHome");
         if (AddHomeStatus === "1" || AddHomeStatus === 1) {
             // already showed up
         }
         else {
-            localStorage.setItem("E_PresensiAddtoHome", 1)
+            localStorage.setItem("PresensiAddtoHome", 1)
             window.addEventListener('load', () => {
                 if (navigator.standalone) {
                     // if app installed ios home screen
@@ -500,19 +500,19 @@ function AddtoHome(time, once) {
 
 //-----------------------------------------------------------------------
 // Dark Mode
-var checkDarkModeStatus = localStorage.getItem("E_PresensiDarkmode");
+var checkDarkModeStatus = localStorage.getItem("PresensiDarkmode");
 var switchDarkMode = document.querySelectorAll(".dark-mode-switch");
 var pageBodyActive = pageBody.classList.contains("dark-mode");
 
 // Check if enable as default
-if (E_Presensi.Dark_Mode.default) {
+if (Presensi.Dark_Mode.default) {
     pageBody.classList.add("dark-mode");
 }
 
 // Local Dark Mode
-if (E_Presensi.Dark_Mode.local_mode.enable) {
-    var nightStart = E_Presensi.Dark_Mode.local_mode.start_time;
-    var nightEnd = E_Presensi.Dark_Mode.local_mode.end_time;
+if (Presensi.Dark_Mode.local_mode.enable) {
+    var nightStart = Presensi.Dark_Mode.local_mode.start_time;
+    var nightEnd = Presensi.Dark_Mode.local_mode.end_time;
     var currentDate = new Date();
     var currentHour = currentDate.getHours();
     if (currentHour >= nightStart || currentHour < nightEnd) {
@@ -522,7 +522,7 @@ if (E_Presensi.Dark_Mode.local_mode.enable) {
 }
 
 // Auto Detect Dark Mode
-if (E_Presensi.Dark_Mode.auto_detect.enable)
+if (Presensi.Dark_Mode.auto_detect.enable)
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         pageBody.classList.add("dark-mode");
     }
@@ -547,17 +547,17 @@ else {
 }
 switchDarkMode.forEach(function (el) {
     el.addEventListener("click", function () {
-        var darkmodeCheck = localStorage.getItem("E_PresensiDarkmode");
+        var darkmodeCheck = localStorage.getItem("PresensiDarkmode");
         var bodyCheck = pageBody.classList.contains('dark-mode');
         if (darkmodeCheck === 1 || darkmodeCheck === "1" || bodyCheck) {
             pageBody.classList.remove("dark-mode");
-            localStorage.setItem("E_PresensiDarkmode", "0");
+            localStorage.setItem("PresensiDarkmode", "0");
             switchDarkModeCheck(false);
         }
         else {
             pageBody.classList.add("dark-mode")
             switchDarkModeCheck(true);
-            localStorage.setItem("E_PresensiDarkmode", "1");
+            localStorage.setItem("PresensiDarkmode", "1");
         }
     })
 })
@@ -571,7 +571,7 @@ function testMode() {
     var colorSuccess = "color: #1DCC70; font-weight:bold;"
 
     console.clear();
-    console.log("%cE_Presensi", "font-size: 1.3em; font-weight: bold; color: #FFF; background-color: #6236FF; padding: 10px 120px; margin-bottom: 16px;")
+    console.log("%cPresensi", "font-size: 1.3em; font-weight: bold; color: #FFF; background-color: #6236FF; padding: 10px 120px; margin-bottom: 16px;")
     console.log("%c🚀 TEST MODE ACTIVATED ..!", "font-size: 1em; font-weight: bold; margin: 4px 0;");
 
     function testModeMsg(value, msg) {
@@ -590,13 +590,13 @@ function testMode() {
     }
 
     testModeSubtitle("THEME SETTINGS")
-    testModeMsg(E_Presensi.PWA.enable, "PWA")
-    testModeMsg(E_Presensi.Dark_Mode.default, "Set dark mode as default theme")
-    testModeMsg(E_Presensi.Dark_Mode.local_mode.enable, "Local dark mode (between " + E_Presensi.Dark_Mode.local_mode.start_time + ":00 and " + E_Presensi.Dark_Mode.local_mode.end_time + ":00)")
-    testModeMsg(E_Presensi.Dark_Mode.auto_detect.enable, "Auto detect dark mode")
-    testModeMsg(E_Presensi.RTL.enable, "RTL")
-    testModeMsg(E_Presensi.Test.enable, "Test mode")
-    testModeMsg(E_Presensi.Test.alert, "Test mode alert")
+    testModeMsg(Presensi.PWA.enable, "PWA")
+    testModeMsg(Presensi.Dark_Mode.default, "Set dark mode as default theme")
+    testModeMsg(Presensi.Dark_Mode.local_mode.enable, "Local dark mode (between " + Presensi.Dark_Mode.local_mode.start_time + ":00 and " + Presensi.Dark_Mode.local_mode.end_time + ":00)")
+    testModeMsg(Presensi.Dark_Mode.auto_detect.enable, "Auto detect dark mode")
+    testModeMsg(Presensi.RTL.enable, "RTL")
+    testModeMsg(Presensi.Test.enable, "Test mode")
+    testModeMsg(Presensi.Test.alert, "Test mode alert")
 
     testModeSubtitle("PREVIEW INFOS")
     // Resolution
@@ -632,10 +632,10 @@ function testMode() {
     }
 
     testModeSubtitle("ANIMATIONS")
-    testModeMsg(E_Presensi.Animation.goBack, "Go Back")
+    testModeMsg(Presensi.Animation.goBack, "Go Back")
 }
 function themeTesting() {
-    var word = E_Presensi.Test.word;
+    var word = Presensi.Test.word;
     var value = "";
     window.addEventListener('keypress', function (e) {
         value = value + String.fromCharCode(e.keyCode).toLowerCase();
@@ -644,7 +644,7 @@ function themeTesting() {
         }
         if (value == word || value === word) {
             value = ""
-            if (E_Presensi.Test.alert) {
+            if (Presensi.Test.alert) {
                 var content = document.getElementById("appCapsule")
                 content.appendChild(document.createElement("div")).className = "test-alert-wrapper";
                 var alert =
@@ -654,7 +654,7 @@ function themeTesting() {
                     +
                     "<div class='text'><h1 class='text-light mb-05'>🤖</h1><strong>"
                     +
-                    E_Presensi.Test.alertMessage
+                    Presensi.Test.alertMessage
                     +
                     "</strong></div></div></div>"
                 var wrapper = document.querySelector(".test-alert-wrapper")
@@ -670,7 +670,7 @@ function themeTesting() {
     })
 }
 
-if (E_Presensi.Test.enable) {
+if (Presensi.Test.enable) {
     themeTesting();
 }
 //-----------------------------------------------------------------------

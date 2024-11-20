@@ -14,6 +14,7 @@ use App\Http\Controllers\CutyController;
 use App\Http\Controllers\SettingController;
 use App\Models\Callplan;
 use App\Models\Employee;
+use App\Models\Kunjungan;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,12 +81,16 @@ Route::middleware(['auth:employee'])->group(function () {
     Route::post('/callplan/load', [CallplanController::class,'loadDataCallplan'])->name('callplan.load');
     Route::post('/callplan/update',[CallplanController::class,'update'])->name('callplan.update');
     Route::post('/callplan/store',[CallplanController::class,'store'])->name('callplan.store');
+    Route::post('/callplan/destroy',[CallplanController::class,'destroy'])->name('callplan.destroy');
 
     Route::get('/kunjungan', [KunjunganController::class, 'userindex'])->name('kunjungan.index');
     Route::post('/kunjungan/load', [KunjunganController::class,'loadDataKunjungan'])->name('kunjungan.load');
+    Route::post('/kunjungan/loadriwayat', [KunjunganController::class,'loadDataKunjunganRiwayat'])->name('kunjungan.loadriwayat');
     Route::post('/kunjungan/update',[KunjunganController::class,'update'])->name('kunjungan.update');
-    Route::post('/kunjungan/store',[KunjunganController::class,'store'])->name('kunjungan.store');
-
+    Route::get('/kunjungan/selfie/{kunjungan_id}', [KunjunganController::class, 'selfiekunjungan'])->name('kunjungan.indexkunjungan');
+    Route::post('/kunjungan/store',[KunjunganController::class,'storeKunjungan'])->name('kunjungan.store');
+    Route::post('/kunjungan/storeUnplan',[KunjunganController::class,'storeUnplan'])->name('kunjungan.storeUnplan');
+    Route::get('unplan', [KunjunganController::class, 'unplan']);
     Route::post('profile/update', [EmployeeController::class, 'update'])->name('profile.update');
     Route::post('profile/updatepass', [EmployeeController::class, 'updatepass'])->name('profile.updatepass');
     Route::post('profile/updatephoto', [EmployeeController::class, 'updatePhoto'])->name('profile.updatephoto');
@@ -110,19 +115,18 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('register', [AuthController::class, 'create'])->name('register.create');  // Show registration form
     Route::post('register', [AuthController::class, 'store'])->name('register.store');  // Handle registration form submission
 
-    Route::get('karyawan',[EmployeeController::class, 'index'])->name('karyawan');
+    // Route::get('karyawan',[EmployeeController::class, 'index'])->name('karyawan');
     Route::get('karyawan', [EmployeeController::class, 'index'])->name('karyawan.index');  // Display list of employees
     Route::get('karyawan/create', [EmployeeController::class, 'create'])->name('karyawan.create');  // Form to add a new employee
     Route::post('karyawan', [EmployeeController::class, 'store'])->name('karyawan.store');
     // Store a new employee
     Route::get('karyawan/{id}/edit', [EmployeeController::class, 'edit'])->name('karyawan.edit');  // Form to edit an employee
-    Route::put('karyawan/{id}', [EmployeeController::class, 'updateKaryawan'])->name('karyawan.update');
+    Route::put('karyawan/{id}/update-profile', [EmployeeController::class, 'updateKaryawan'])->name('karyawan.update');
     Route::put('karyawan/{id}/update-password', [EmployeeController::class, 'updatePassword'])->name('karyawan.update.password');    
     Route::delete('karyawan/{id}', [EmployeeController::class, 'destroy'])->name('karyawan.destroy');  // Delete employee
 
     Route::get('/kantor', [BuildingController::class, 'index'])->name('adminyofa.kantor.index');
     Route::get('/kantor/create', [BuildingController::class, 'create'])->name('kantor.create');
-    Route::get('/kantor/{building}', [BuildingController::class, 'show'])->name('kantor.show');
     Route::post('/kantor', [BuildingController::class, 'store'])->name('kantor.store');
     // Route untuk mengedit data
     Route::get('/kantor/{building}/edit', [BuildingController::class, 'edit'])->name('kantor.edit');
@@ -131,16 +135,20 @@ Route::middleware(['auth:user'])->group(function () {
     // Route untuk menghapus data
     Route::delete('/kantor/{building}', [BuildingController::class, 'destroy'])->name('kantor.destroy');
 
-    Route::get('cutyadmin', [CutyController::class, 'index'])->name('cutyadmin');
+    Route::get('/cutyadmin', [CutyController::class, 'index'])->name('cutyadmin');
     Route::post('/cuty/update-status', [CutyController::class, 'updateStatus'])->name('cuti.updateStatus');
     Route::get('/cuty/print/{id}', [CutyController::class, 'print'])->name('cuti.print');
     
     // Route::post('/prosesloginadmin', [AuthController::class, 'prosesloginadmin'])->name('prosesloginadmin');
     //Presence
-    Route::get('/map', [PresenceController::class, 'showMap'])->name('map.show');
     Route::get('/absensi', [PresenceController::class, 'index'])->name('adminyofa.absensi.index');
     Route::get('/loaddataabsen', [PresenceController::class, 'loadDataAbsen'])->name('absensi.load');
     
+
+    //kunjungan
+    Route::get('/kunjunganadmin', [KunjunganController::class, 'index'])->name('adminyofa.kunjungan.index');
+    Route::get('/loaddatakunjunganadmin', [KunjunganController::class, 'loadDataKunjunganAdmin'])->name('kunjungan.loadadmin');
+
     // Route::get('/absensi', [PresenceController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/create', [PresenceController::class, 'create'])->name('absensi.create');
     Route::get('/absensi/edit/{id}', [PresenceController::class, 'edit'])->name('absensi.edit');
@@ -166,13 +174,11 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/settings/umum', [SettingController::class, 'loadSettingUmum'])->name('settings.umum');
     Route::get('/settings/profile', [SettingController::class, 'loadSettingProfile'])->name('settings.profile');
 
-        Route::get('/jabatan', [PositionController::class, 'index'])->name('adminyofa.jabatan.index');
-        Route::get('/jabatan/create', [PositionController::class, 'create'])->name('jabatan.create');
-        Route::get('/jabatan/edit/{id}', [PositionController::class, 'edit'])->name('jabatan.edit');
-        Route::get('/jabatan/{id}', [PositionController::class, 'show'])->name('jabatan.show');
-        Route::post('/jabatan/store', [PositionController::class, 'store'])->name('jabatan.store');
-        Route::put('/jabatan/{position_id}', [PositionController::class, 'update'])->name('jabatan.update');
-        Route::delete('/jabatan/{position_id}', [PositionController::class, 'destroy'])->name('jabatan.destroy');
+    Route::get('/jabatan', [PositionController::class, 'index'])->name('adminyofa.jabatan.index');
+    Route::get('/jabatan/create', [PositionController::class, 'create'])->name('jabatan.create');
+    Route::post('/jabatan/store', [PositionController::class, 'store'])->name('jabatan.store');
+    Route::put('/jabatan/{position_id}', [PositionController::class, 'update'])->name('jabatan.update');
+    Route::delete('/jabatan/{position_id}', [PositionController::class, 'destroy'])->name('jabatan.destroy');
     //route group adminyofa
     Route ::group(['prefix' => 'adminyofa'], function () {
 

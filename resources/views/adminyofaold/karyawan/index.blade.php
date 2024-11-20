@@ -242,7 +242,7 @@
                                         <form class="form-horizontal validate update-password">
                                             @csrf
                                             @method('PUT')
-        
+    
                                             <div class="box-body">
                                                 <!-- Employees Email -->
                                                 <div class="form-group">

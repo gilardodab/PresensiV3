@@ -253,10 +253,10 @@ class AuthController extends Controller
 
     public function useradmin(){
         $op = request()->get('op');
-        $users = DB::table('users')
-            ->join('user_level', 'users.level', '=', 'user_level.level_id') // Join user_level based on user.level
-            ->select('users.user_id', 'users.username', 'users.fullname', 'users.email', 'users.registered', 'users.level', 'user_level.level_id', 'user_level.level_name') // Select specific columns
-            ->orderBy('users.user_id', 'DESC') // Order by user_id descending
+        $users = DB::table('user')
+            ->join('user_level', 'user.level', '=', 'user_level.level_id') // Join user_level based on user.level
+            ->select('user.user_id', 'user.username', 'user.fullname', 'user.email', 'user.registered', 'user.level', 'user_level.level_id', 'user_level.level_name') // Select specific columns
+            ->orderBy('user.user_id', 'DESC') // Order by user_id descending
             ->get(); // Execute the query and retrieve the results
 
         $levels = DB::table('user_level')->get();

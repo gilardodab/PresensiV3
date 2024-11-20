@@ -1,7 +1,7 @@
 {
-    "name": "E_PResensi",
-    "short_name": "Finapp",
-    "start_url": "index.php",
+    "name": "Presensi",
+    "short_name": "Presensi",
+    "start_url": "home",
     "display": "standalone",
     "scope" : "/",
     "background_color": "#000000",

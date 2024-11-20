@@ -11,7 +11,7 @@ var CACHE_NAME = 'cache-version-' + VERSION;
 
 // Files
 var REQUIRED_FILES = [
-  'index.php',
+  'home',
   // 'assets/css/style.css',
   // 'assets/css/custom.css',
   // 'assets/js/script.js',

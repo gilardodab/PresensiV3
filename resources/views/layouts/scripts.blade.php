@@ -5,15 +5,14 @@
 <script src="{{ asset('assets/js/lib/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/lib/bootstrap.min.js') }}"></script>
 <!-- Ionicons -->
-<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
 <script src="https://kit.fontawesome.com/0ccb04165b.js" crossorigin="anonymous"></script>
 <!-- Base Js File -->
 <script src="{{ asset('assets/js/base.js') }}"></script>
 <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 <script src="{{ asset('assets/js/webcamjs/webcam.min.js') }}"></script>
 <script src="{{ asset('assets/js/presensi.js') }}"></script>
-{{-- <script src="{{ asset('assets/__manifest.json') }}"></script>
-<script src="{{ asset('assets/__service-worker.json') }}"></script> --}}
+{{-- <script type="text/javascript" src="{{ URL::asset('__service-worker.js')}}"></script> --}}
+{{-- <script src="{{ asset('assets/__service-worker.json') }}"></script> --}}
 @if(Request::is('home') || Request::is('profile'))
 <script>
     var loadhomeUrl = "{{ route('load.home.counter') }}";
@@ -38,10 +37,13 @@ var updatecutyUrl = "{{ route('cuty.update') }}";
 var loadcallplanUrl = "{{route('callplan.load')}}";
 var storecallplanUrl = "{{route('callplan.store')}}";
 var updatecallplanUrl = "{{route('callplan.update')}}";
+var deletecallplanUrl ="{{route('callplan.destroy')}}"
 
 var loadkunjunganUrl = "{{route('kunjungan.load')}}";
+var loadhistoryKunjunganUrl = "{{ route('kunjungan.loadriwayat')}}";
 var storekunjunganUrl = "{{route('kunjungan.store')}}";
 var updatekunjunganUrl = "{{route('kunjungan.update')}}";
+
 
 </script>
 <script src="{{ asset('assets/js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -103,90 +105,89 @@ var updatekunjunganUrl = "{{route('kunjungan.update')}}";
         shutter.src = navigator.userAgent.match(/Firefox/) ? 'assets/js/webcamjs/shutter.ogg' : 'assets/js/webcamjs/shutter.mp3';
 
         $(document).on('click', '.absent-capture', function() { 
-    shutter.play();
+            shutter.play();
 
-    // Tangkap gambar dari Webcam
-    Webcam.snap(function(data_uri) {
-        // Dapatkan data latitude dan jarak (radius)
-        var latitude = $('#latitude').text();  // Pastikan elemen #latitude ada di HTML
-        var jarak = $('#radius').text();       // Pastikan elemen #radius ada di HTML
-        var homeUrl = "/home";
-        // Mengirim data ke server menggunakan AJAX
-        $.ajax({
-            url: '{{ route('presences.store') }}',  // Menggunakan route yang telah dibuat
-            type: 'POST',
-            data: {
-                webcam: data_uri,  // Base64 data dari webcam
-                latitude: latitude,  // Mengirim latitude
-                radius: jarak,       // Mengirim radius
-                _token: '{{ csrf_token() }}' // Sertakan CSRF token untuk keamanan
-            },
-            success: function(response) {
-                    var resultStatus = response.status;
-                    var resultMessage = response.message;
+            // Tangkap gambar dari Webcam
+            Webcam.snap(function(data_uri) {
+                // Dapatkan data latitude dan jarak (radius)
+                var latitude = $('#latitude').text();  // Pastikan elemen #latitude ada di HTML
+                var jarak = $('#radius').text();       // Pastikan elemen #radius ada di HTML
+                var homeUrl = "/home";
+                // Mengirim data ke server menggunakan AJAX
+                $.ajax({
+                    url: '{{ route('presences.store') }}',  // Menggunakan route yang telah dibuat
+                    type: 'POST',
+                    data: {
+                        webcam: data_uri,  // Base64 data dari webcam
+                        latitude: latitude,  // Mengirim latitude
+                        radius: jarak,       // Mengirim radius
+                        _token: '{{ csrf_token() }}' // Sertakan CSRF token untuk keamanan
+                    },
+                    success: function(response) {
+                            var resultStatus = response.status;
+                            var resultMessage = response.message;
 
-                    if(resultStatus === 'success') {
-                        swal({
-                            title: 'Berhasil!',
-                            text: resultMessage,
-                            icon: 'success',
-                            buttons: {
-                                confirm: {
-                                    text: 'OK',
-                                    value: true,
-                                    visible: true,
-                                    className: "",
-                                    closeModal: true
-                                }
+                            if(resultStatus === 'success') {
+                                swal({
+                                    title: 'Berhasil!',
+                                    text: resultMessage,
+                                    icon: 'success',
+                                    buttons: {
+                                        confirm: {
+                                            text: 'OK',
+                                            value: true,
+                                            visible: true,
+                                            className: "",
+                                            closeModal: true
+                                        }
+                                    }
+                                }).then((value) => {
+                                    // Redirect ke home setelah pengguna menekan OK
+                                    window.location.href = homeUrl;
+                                });
+                            } else {
+                                swal({
+                                    title: 'Oops!',
+                                    text: resultMessage,
+                                    icon: 'error',
+                                    buttons: {
+                                        confirm: {
+                                            text: 'OK',
+                                            value: true,
+                                            visible: true,
+                                            className: "",
+                                            closeModal: true
+                                        }
+                                    }
+                                }).then((value) => {
+                                    // Redirect ke home setelah pengguna menekan OK
+                                    window.location.href = homeUrl;
+                                });
                             }
-                        }).then((value) => {
-                            // Redirect ke home setelah pengguna menekan OK
-                            window.location.href = homeUrl;
-                        });
-                    } else {
-                        swal({
-                            title: 'Oops!',
-                            text: resultMessage,
-                            icon: 'error',
-                            buttons: {
-                                confirm: {
-                                    text: 'OK',
-                                    value: true,
-                                    visible: true,
-                                    className: "",
-                                    closeModal: true
+                        },
+                    error: function(xhr) {
+                            console.log("Error response: ", xhr.responseText); // Tambahkan log untuk mengetahui error dari server
+                            swal({
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan saat absen.' + xhr.responseText,
+                                icon: 'error',
+                                buttons: {
+                                    confirm: {
+                                        text: 'OK',
+                                        value: true,
+                                        visible: true,
+                                        className: "",
+                                        closeModal: true
+                                    }
                                 }
-                            }
-                        }).then((value) => {
-                            // Redirect ke home setelah pengguna menekan OK
-                            window.location.href = homeUrl;
-                        });
+                            }).then((value) => {
+                                // Redirect ke home setelah pengguna menekan OK
+                                window.location.href = homeUrl;
+                            });
                     }
-                },
-            error: function(xhr) {
-                    console.log("Error response: ", xhr.responseText); // Tambahkan log untuk mengetahui error dari server
-                    swal({
-                        title: 'Error!',
-                        text: 'Terjadi kesalahan saat absen.' + xhr.responseText,
-                        icon: 'error',
-                        buttons: {
-                            confirm: {
-                                text: 'OK',
-                                value: true,
-                                visible: true,
-                                className: "",
-                                closeModal: true
-                            }
-                        }
-                    }).then((value) => {
-                        // Redirect ke home setelah pengguna menekan OK
-                        window.location.href = homeUrl;
-                    });
-            }
+                });
+            });
         });
-    });
-});
-
     });
 </script>
 @endif

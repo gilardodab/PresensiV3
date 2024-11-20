@@ -69,20 +69,34 @@ class PresenceController extends Controller
 
     public function index(){
         $employees = Employee::with('position', 'shift', 'building')->get();
-        return view('adminyofa.absensi.index', compact('employees'));
+        $positions = Position::all();
+        return view('adminyofa.absensi.index', compact('employees', 'positions'));
     }
 
     public function loadDataAbsen(Request $request)
     {
         $id = $request->input('id');
-        $month = $request->input('month') ?: date('m');
-        $year = $request->input('year') ?: date('Y');
-
-        $presences = Presence::where('employees_id', $id)
-            ->whereMonth('presence_date', $month)
-            ->whereYear('presence_date', $year)
-            ->get();
-
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+    
+        // If no date range is provided, default to the current month
+        if (!$startDate || !$endDate) {
+            $currentDate = now(); // current date and time
+            $startDate = $currentDate->copy()->startOfMonth()->format('Y-m-d'); // first day of the current month
+            $endDate = $currentDate->format('Y-m-d'); // today's date
+        }
+    
+        $query = Presence::query();
+    
+        if ($id) {
+            $query->where('employees_id', $id);
+        }
+    
+        if ($startDate && $endDate) {
+            $query->whereBetween('presence_date', [$startDate, $endDate]);
+        }
+    
+        $presences = $query->get();
         return view('adminyofa.absensi.partials.absensi_table', compact('presences'));
     }
     

@@ -25,4 +25,9 @@ class Callplan extends Model
     {
         return $this->belongsTo(Employee::class, 'employees_id');
     }
+
+        public function kunjungan()
+    {
+        return $this->hasMany(Kunjungan::class, 'callplan_id', 'callplan_id');
+    }
 }

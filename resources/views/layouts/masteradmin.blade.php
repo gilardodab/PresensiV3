@@ -26,20 +26,24 @@ License: For each use you must have a valid license purchased only from above li
   <!-- End fonts -->
   
   <!-- CSRF Token -->
-  <meta name="_token" content="{{ csrf_token() }}">
+  {{-- <meta name="_token" content="{{ csrf_token() }}"> --}}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   
   <link rel="shortcut icon" href="{{ asset('/favicon.ico') }}">
 
   <!-- plugin css -->
-  <link href="{{ asset('assets/fonts/feather-font/css/iconfont.css') }}" rel="stylesheet" />
+  <link href="{{ asset('assets/fonts/css/iconfont.css') }}" rel="stylesheet" />
   <link href="{{ asset('assets/plugins/perfect-scrollbar/perfect-scrollbar.css') }}" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
   <!-- end plugin css -->
 
   @stack('plugin-styles')
 
   <!-- common css -->
-  <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
   <!-- end common css -->
+  <link rel="stylesheet" href="{{ asset('assets/plugins/magnific-popup/magnific-popup.css') }}">
 
   @stack('style')
 </head>
@@ -69,9 +73,11 @@ License: For each use you must have a valid license purchased only from above li
     <!-- end plugin js -->
 
     <!-- common js -->
-    <script src="{{ asset('admin/js/dashboard/template.js') }}"></script>
+    <script src="{{ asset('assets/js/template.js') }}"></script>
     <!-- end common js -->
+    @include('sweetalert::alert')
 
+    @include('layouts.scriptadmin')
     @stack('custom-scripts')
 </body>
 </html>

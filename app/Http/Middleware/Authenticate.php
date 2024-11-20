@@ -13,12 +13,13 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (!$request->expectsJson()) {
-            if (request()->is('adminyofa/*')) {
-
+            // Periksa apakah rute memiliki awalan 'adminyofa'
+            if ($request->is('adminyofa/*')) {
                 return route('loginadmin');
-            } else {
-                return route('login');
             }
+            
+            // Jika tidak, arahkan ke halaman login umum
+            return route('login');
         }
     }
 }

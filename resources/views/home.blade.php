@@ -209,10 +209,7 @@
           </div>
       </div>   
   </div>
-  {{-- <script>
-    var loadhomeUrl = "{{ route('load.home.counter') }}";
-</script>
-<script src="{{ asset('assets/js/script.js') }}"></script> --}}
+
 @endsection
 
 

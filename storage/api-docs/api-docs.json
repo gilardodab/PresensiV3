@@ -1,0 +1,619 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Presensi API",
+        "description": "API documentation for the Presensi application",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local server"
+        },
+        {
+            "url": "/docs"
+        }
+    ],
+    "paths": {
+        "/yf/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "description": "Login user yang sudah terdaftar",
+                "operationId": "0a3b8667054db84c47c94f22db0965d2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil login"
+                    },
+                    "401": {
+                        "description": "Login gagal"
+                    }
+                }
+            }
+        },
+        "/yf/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "description": "Logout user yang sedang login",
+                "operationId": "b14648c1fbd6b339ce814c09df43d306",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout successful"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User tidak terautentikasi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not authenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/yf/cuti/data-cuti": {
+            "get": {
+                "tags": [
+                    "Cuti"
+                ],
+                "summary": "Memuat data cuti",
+                "description": "Mendapatkan data cuti yang sedang login berdasarkan token autentikasi",
+                "operationId": "7ba452588da43a1717d623d89522dda4",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan data cuti",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "employee_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "employee_email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data Cuti Tidak Ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee data not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/cuti/tambah-data-cuti": {
+            "post": {
+                "tags": [
+                    "Cuti"
+                ],
+                "summary": "Memuat data cuti",
+                "description": "Menambahkan data cuti yang sedang login berdasarkan token autentikasi",
+                "operationId": "f1b76b39a0f793c51e57bf86c50f41c0",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menyimpan data cuti",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "employee_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "employee_email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/karyawan/data": {
+            "get": {
+                "tags": [
+                    "Karyawan"
+                ],
+                "summary": "Get employee data",
+                "description": "Mendapatkan data karyawan yang sedang login berdasarkan token autentikasi",
+                "operationId": "25f80d13d4cda225bae9b578a708e67e",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan data karyawan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "employee_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "employee_email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not authenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee data not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/callplan/data-callplan": {
+            "get": {
+                "tags": [
+                    "Kunjungan"
+                ],
+                "summary": "Mendapatkan data jadwal kunjungan",
+                "description": "Mendapatkan data karyawan yang sedang login berdasarkan token autentikasi",
+                "operationId": "efa1d36023a8ae5b65a9321a65e59f1e",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan data kunjungan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "employee_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "employee_email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not authenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Jadwal Kunjungan Tidak tersedia diperiode ini ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee data not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/maintenance": {
+            "get": {
+                "tags": [
+                    "Maintenance"
+                ],
+                "summary": "Get all maintenance data",
+                "description": "Menampilkan semua data maintenance",
+                "operationId": "22ad6da223f9d768f017ffac86a52a40",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan data maintenance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Routine Maintenance"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Monthly routine maintenance"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-11-01T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-11-01T12:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve data"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/yf/presensi": {
+            "get": {
+                "tags": [
+                    "Presensi"
+                ],
+                "summary": "Load employee presence data",
+                "description": "Memuat data absensi karyawan berdasarkan ID, bulan, dan tahun",
+                "operationId": "687c3099216d622933b624ee4b99102f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID karyawan",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Bulan dalam format 2 digit (default: bulan saat ini)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "01"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Tahun dalam format 4 digit (default: tahun saat ini)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2023"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil memuat data absensi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "employees_id": {
+                                                        "type": "integer",
+                                                        "example": 123
+                                                    },
+                                                    "presence_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2023-11-01"
+                                                    },
+                                                    "presence_status": {
+                                                        "type": "string",
+                                                        "example": "Present"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-11-01T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-11-01T12:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data absensi berhasil dimuat"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data absensi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data absensi tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Cuti",
+            "description": "Cuti"
+        },
+        {
+            "name": "Karyawan",
+            "description": "Karyawan"
+        },
+        {
+            "name": "Kunjungan",
+            "description": "Kunjungan"
+        },
+        {
+            "name": "Maintenance",
+            "description": "Maintenance"
+        },
+        {
+            "name": "Presensi",
+            "description": "Presensi"
+        }
+    ]
+}

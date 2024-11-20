@@ -124,51 +124,53 @@
                     </div>
                     <div class="modal-body">
                         <form id="form-update-callplan" autocomplete="off">
-                            <input type="hidden" id="callplan-id" name="callpan_id" value="" readonly required>
+                            <input type="hidden" id="callplan-id" name="callplan_id" value="" readonly required> <!-- Typo di sini diperbaiki -->
+        
                             <div class="form-group basic">
                                 <div class="input-wrapper">
                                     <label class="label">Nama</label>
-                                    <input type="text" class="form-control" name="name" value="{{ Auth::user()->employees_name}}" style="background:#eee" readonly required>
+                                    <input type="text" class="form-control" name="name" value="{{ Auth::user()->employees_name }}" style="background:#eee" readonly required>
                                     <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                                 </div>
                             </div>
-
+        
                             <div class="form-group basic">
                                 <div class="input-wrapper">
                                     <label class="label">Tanggal Mulai</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control datepicker" id="tanggal_cp" name="tanggal_cp" placeholder="" value="" required>
-                                            <div class="input-group-addon">
-                                                <ion-icon name="calendar-outline"></ion-icon>
-                                            </div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control datepicker" id="tanggal-cp" name="tanggal_cp" placeholder="" value="" required>
+                                        <div class="input-group-addon">
+                                            <ion-icon name="calendar-outline"></ion-icon>
                                         </div>
                                     </div>
+                                </div>
                             </div>
+        
                             <div class="form-group basic">
                                 <div class="input-wrapper">
                                     <label class="label">Nama Outlet</label>
-                                   <textarea rows="1" class="form-control nama_outlet" id="nama_outlet" name="nama_outlet" value="" required></textarea>
+                                    <textarea rows="1" class="form-control" id="nama_outlet" name="nama_outlet" required></textarea>
                                     <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                                 </div>
                             </div>
-
+        
                             <div class="form-group basic">
                                 <div class="input-wrapper">
                                     <label class="label">Keterangan</label>
-                                   <textarea rows="4" class="form-control description" id="description" name="description" required></textarea>
+                                    <textarea rows="4" class="form-control" id="description" name="description"></textarea>
                                     <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                                 </div>
                             </div>
-
+        
                             <div class="form-group basic">
                                 <button type="submit" class="btn btn-danger btn-block btn-lg mt-2">Simpan</button>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
+        
     <!-- * END UPDATE -->
 </div>
 @endsection

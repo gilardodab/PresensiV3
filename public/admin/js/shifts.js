@@ -1,9 +1,6 @@
 
 jQuery(document).ready(function() {
-    jQuery('#datatable').dataTable({
-        "iDisplayLength": 20,
-        "aLengthMenu": [[20, 30, 50, -1], [20, 30, 50, "All"]]
-    });
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

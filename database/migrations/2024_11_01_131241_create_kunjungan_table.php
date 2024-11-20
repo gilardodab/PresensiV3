@@ -20,12 +20,13 @@ return new class extends Migration
             $table->string('status_kunjungan');
             $table->string('latitude_longtitude_in')->nullable();
             $table->text('information')->nullable();
-            $table->string('callplan')->nullable(); 
+            $table->unsignedBigInteger('callplan_id')->nullable(); 
             $table->text('description')->nullable();
             $table->timestamps();
 
             // Relasi jika tabel employees 
             $table->foreign('employees_id')->references('id')->on('employees')->onDelete('cascade');
+            $table->foreign('callplan_id')->references('callplan_id')->on('callplan')->onDelete('cascade');
         });
     }
 
