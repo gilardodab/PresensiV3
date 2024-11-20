@@ -7,7 +7,6 @@
 <script src="{{ asset('admin/js/demo.js') }}"></script> --}}
 {{-- <script src="{{ asset('admin/js/sweetalert.min.js') }}"></script> --}}
 <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
-
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>

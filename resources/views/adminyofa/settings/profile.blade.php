@@ -25,9 +25,9 @@
       <label class="col-sm-2 control-label"></label>
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
         @if($user->level == 1)
-          <button type="submit" class="btn bg-blue"><i class="fa fa-check"></i> Simpan</button>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Simpan</button>
         @else
-          <button type="button" class="btn bg-blue access-failed"><i class="fa fa-check"></i> Simpan</button>
+          <button type="button" class="btn btn-primary access-failed"><i class="fa fa-check"></i> Simpan</button>
         @endif
         <button type="reset" class="btn btn-danger btn-reset-profile">Reset Profil</button>
       </div>

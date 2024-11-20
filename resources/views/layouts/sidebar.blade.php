@@ -14,7 +14,7 @@
       <li class="nav-item nav-category">Main</li>
       <li class="nav-item {{ active_class(['/']) }}">
         <a href="{{ url('/adminyofa') }}" class="nav-link">
-          <i class="link-icon" data-feather="box"></i>
+          <i class="link-icon" data-feather="home"></i>
           <span class="link-title">Dashboard</span>
         </a>
       </li>
@@ -55,7 +55,7 @@
       <li class="nav-item nav-category">Laporan</li>
       <li class="nav-item {{ active_class(['ui-components/*']) }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button" aria-expanded="{{ is_active_route(['ui-components/*']) }}" aria-controls="uiComponents">
-          <i class="link-icon" data-feather="feather"></i>
+          <i class="link-icon" data-feather="file-text"></i>
           <span class="link-title">Detail Laporan</span>
           <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
@@ -78,8 +78,8 @@
       </li>
       <li class="nav-item nav-category">Pengaturan Aplikasi</li>
       <li class="nav-item {{ Request::is('settings') ? 'active' : '' }}">
-        <a href="/settings" target="_blank" class="nav-link">
-          <i class="link-icon" data-feather="hash"></i>
+        <a href="settings" class="nav-link">
+          <i class="link-icon" data-feather="settings"></i>
           <span class="link-title">Pengaturan Aplikasi</span>
         </a>
       </li>

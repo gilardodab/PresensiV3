@@ -1,7 +1,7 @@
 @extends('layouts.masteradmin')
 @push('plugin-styles')
   <link href="{{ asset('assets/plugins/datatables-net-bs5/dataTables.bootstrap5.css') }}" rel="stylesheet" />
-  <link href="{{ asset('admin/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" />
+  <link href="{{ asset('assets/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -160,7 +160,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('admin/plugins/timepicker/timepicker.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
 <script>
   var shiftStoreUrl = "{{ route('shift.store') }}";
   var shiftUpdateUrl = "{{ route('shift.update', '') }}";

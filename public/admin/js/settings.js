@@ -1,13 +1,13 @@
 // Load Setting
 function loadSettingUmum() {
-    $("#load").html('<div class="text-center"><div class="spinner-border" role="status"></div><p>Loading data...</p></div>');
+    $("#loadsettingumum").html('<div class="text-center"><div class="spinner-border" role="status"></div><p>Loading data...</p></div>');
     
     // Memanggil URL yang sudah di-generate di Blade
     $.ajax({
         url: settingUmumUrl, // URL dari Blade
         type: 'GET',
         success: function(response) {
-            $("#load").html(response); // Masukkan response HTML ke div#load
+            $("#loadsettingumum").html(response); // Masukkan response HTML ke div#load
         },
         error: function(xhr) {
             console.log("Error loading setting umum:", xhr.responseText);
@@ -42,7 +42,7 @@ loadSettingUmum();
 
 /* -------------------- Edit ------------------- */
 // Update setting umum
-$("#load").on("submit", ".update-setting", function(e) {
+$("#loadsettingumum").on("submit", ".update-setting", function(e) {
     e.preventDefault();
     $.ajax({
         url: updateSettingUrl,  // Gunakan variabel URL dari Blade

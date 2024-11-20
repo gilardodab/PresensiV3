@@ -260,6 +260,7 @@ class AuthController extends Controller
             ->get(); // Execute the query and retrieve the results
 
         $levels = DB::table('user_level')->get();
+        
         return view('adminyofa.user.index', compact('users', 'op', 'levels'));
     }
 }

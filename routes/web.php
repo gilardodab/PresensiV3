@@ -166,6 +166,11 @@ Route::middleware(['auth:user'])->group(function () {
     Route::delete('/shift/{shift_id}', [ShiftController::class, 'destroy'])->name('shift.destroy');
 
     Route::get('user',[AuthController::class, 'useradmin'])->name('adminyofa.user.index');
+    Route::get('/user/create', [AuthController::class, 'create'])->name('user.create');
+    Route::post('/user', [AuthController::class, 'store'])->name('user.store');
+    Route::get('/user/edit', [AuthController::class, 'edit'])->name('user.edit');
+    Route::put('/user/update', [AuthController::class, 'update'])->name('user.update');
+    Route::delete('/user/{id}', [AuthController::class, 'destroy'])->name('user.destroy');
 
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

@@ -13,12 +13,12 @@
       <div class="card">
                         <div class="card-body">
                             @if ($user->level == 1)
-                            <button type="button" class="btn btn-success btn-flat" data-toggle="modal" data-target="#modalAdd"><i class="fa fa-plus"></i> Tambah Baru</button>
+                            <button type="button" class="btn btn-success btn-flat" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="fa fa-plus"></i> Tambah Baru</button>
                         @else
                             <button type="button" class="btn btn-success btn-flat access-failed"><i class="fa fa-plus"></i> Tambah Baru</button>
                         @endif
                             <div class="table-responsive">
-                                <table id="swdatatable" class="table table-bordered">
+                                <table id="datatable" class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th style="width:20px" class="text-center">No</th>
@@ -53,13 +53,12 @@
                                                     <div class="btn-group">
                                                     @if ($user->level == 1)
                                                       <div class="btn-group">
-                                                        <button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Proses
+                                                        <button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Proses
                                                           <span class="caret"></span>
-                                                          <span class="sr-only">Toggle Dropdown</span>
                                                         </button>
                                                         <ul class="dropdown-menu" role="menu">
-                                                          <li><a href="javascript:void(0);" data-id="{{$cuti['cuty_id']}}" data-status="1" class="update-status">Setujui</a></li>
-                                                          <li><a href="javascript:void(0);" data-id="{{$cuti['cuty_id']}}" data-status="2" class="update-status">Tidak disetujui</a></li>
+                                                          <li><a href="javascript:void(0);" data-id="{{$cuti['cuty_id']}}" data-status="1" class="update-status btn btn-xs btn-success" >Setujui</a></li>
+                                                          <li><a href="javascript:void(0);" data-id="{{$cuti['cuty_id']}}" data-status="2" class="update-status btn btn-xs btn-danger">Tidak disetujui</a></li>
                                                         </ul>
                                                       </div>
                                                       <a href="{{ route('cuti.print', $cuti['cuty_id']) }}" target="_blank" class="btn btn-xs btn-danger " title="Print">
@@ -82,8 +81,85 @@
                     </div>
     </div>
 </div>
-<script>
+  <script src="{{ asset('assets/plugins/datatables-net/jquery.dataTables.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-net-bs5/dataTables.bootstrap5.js') }}"></script>
+  <script src=" https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+  <script>
     var cutiUpdateUrl = "{{ route('cuti.updateStatus') }}";
   </script> 
-  <script src="{{ asset('admin/js/cuti.js') }}"></script>
+  <script>
+    $(document).ready(function() {
+    $('#datatable').dataTable({
+        "iDisplayLength": 20,
+        "aLengthMenu": [[20, 30, 50, -1], [20, 30, 50, "All"]]
+    });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
+    function loading(){
+        $(".loading").show();
+        $(".loading").delay(1500).fadeOut(500);
+    }
+    
+        /* -------------------- Edit ------------------- */
+        $(document).on('click', '.update-status', function() {
+            var id = $(this).attr("data-id");
+            var status = $(this).attr("data-status");
+        
+            $.ajax({
+                url: cutiUpdateUrl,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: id,
+                    status: status
+                },
+                beforeSend: function() {
+                    loading(); // Show loading state
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        swal({
+                            title: 'Berhasil!',
+                            text: response.message,
+                            icon: 'success',
+                            timer: 2000
+                        });
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2100);
+                    } else {
+                        swal({
+                            title: 'Oops!',
+                            text: response.message,
+                            icon: 'error',
+                            timer: 1500
+                        });
+                    }
+                },
+                complete: function() {
+                    $(".loading").hide();
+                },
+                error: function(xhr) {
+                    swal({
+                        title: 'Error!',
+                        text: xhr.responseJSON.message,
+                        icon: 'error',
+                        timer: 1500
+                    });
+                }
+            });
+        });
+        
+    
+    });
+  </script>
+
 @endsection
