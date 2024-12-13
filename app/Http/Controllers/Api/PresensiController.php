@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Presence;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use Carbon\Carbon;
 
 
@@ -168,7 +170,7 @@ class PresensiController extends Controller
         $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
-            'picture' => 'required|string' // Mengharapkan gambar dalam format Base64
+            // 'picture' => 'required|string' // Mengharapkan gambar dalam format Base64
         ]);
     
         $user = Auth::user();
@@ -182,10 +184,12 @@ class PresensiController extends Controller
         $imageData = base64_decode($base64Image);
     
         // Tentukan nama file dan path penyimpanan untuk gambar
-        $file = $request->file('picture'); // Asumsikan bahwa `picture` adalah file
-        $type = $file->getClientOriginalExtension(); // Menggunakan getClientOriginalExtension untuk mendapatkan ekstensi file
+        $type = 'jpg'; // Asumsikan ekstensi gambar adalah jpg
         $filename = now()->toDateString() . '-in-' . time() . '-' . $employee->id . '.' . $type;
         $filePath = storage_path('app/public/absent/' . $filename);
+
+        // Simpan gambar ke disk
+        file_put_contents($filePath, $imageData);
     
         if ($presence) { 
             if ($presence->time_out == '00:00:00') {
@@ -193,10 +197,8 @@ class PresensiController extends Controller
                 $filename = now()->toDateString() . '-out-' . time() . '-' . $employee->id . '.' . $type;
                 $filePath = storage_path('app/public/absent/' . $filename);
                 
-                // Simpan gambar pulang ke penyimpanan
                 file_put_contents($filePath, $imageData);
     
-                // Update data presensi dengan waktu pulang, gambar pulang, dan lokasi pulang
                 $presence->update([
                     'time_out' => now()->toTimeString(),
                     'picture_out' => $filename,
@@ -215,10 +217,7 @@ class PresensiController extends Controller
                 ], 400);
             }
         } else {
-            // Simpan gambar masuk ke penyimpanan
-            file_put_contents($filePath, $imageData);
-    
-            // Simpan data presensi masuk ke database
+            // Simpan data presensi masuk
             $presence = Presence::create([
                 'employees_id' => $employee->id,
                 'presence_date' => now()->toDateString(),
@@ -228,6 +227,11 @@ class PresensiController extends Controller
                 'latitude_longtitude_in' => $request->latitude . ',' . $request->longitude,
                 'present_id' => 1, // 1 untuk hadir
             ]);
+                Notification::create([
+                    'employee_id' => $employee->id,
+                    'title' => 'Presensi Masuk',
+                    'body' => 'Anda telah melakukan presensi masuk',
+                ]); 
     
             return response()->json([
                 'status' => 'success',
@@ -239,22 +243,38 @@ class PresensiController extends Controller
 
     public function updateRiwayat(Request $request)
     {
-        $presenceId = $request->input('presence_id');
-
-        // Validasi input
+        // Validate the incoming data
         $request->validate([
-            'present_id' => 'required|exists:present_status,present_id',
-            'information' => 'nullable|string',
+            'presence_id' => 'required|exists:presences,presence_id',  // Validate that the presence exists
+            'present_id' => 'required|exists:present_status,present_id', // Validate present_id exists in present_status table
+            'information' => 'nullable|string', // Information can be null or a string
         ]);
-
-        // Update data presensi
+    
+        // Retrieve the presence by the presence_id
+        $presenceId = $request->input('presence_id');
         $presence = Presence::find($presenceId);
+    
+        if (!$presence) {
+            // Return a 404 response if the presence is not found
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Presensi tidak ditemukan.'
+            ], 404);
+        }
+    
+        // Update the presence data
         $presence->present_id = $request->input('present_id');
         $presence->information = $request->input('information');
         $presence->save();
-
-        return response()->json(['status' => 'success']);
+    
+        // Return success response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data presensi berhasil diperbarui',
+            'data' => $presence // Optionally return the updated data
+        ]);
     }
+    
     
     
 

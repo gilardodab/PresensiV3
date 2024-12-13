@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
+use Kreait\Firebase\Messaging\Notification as MessagingNotification;
+use NotificationChannels\Fcm\Resources\Notification;
 
 return [
 
@@ -184,6 +186,9 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Laravel\Sanctum\SanctumServiceProvider::class,
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
+        NotificationChannels\Fcm\FcmServiceProvider::class,
+        //kreait
+        
         /*
          * Package Service Providers...
          */

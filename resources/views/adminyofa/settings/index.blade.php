@@ -31,6 +31,10 @@
         <div class="tab-pane fade" id="settingprofile" role="tabpanel" aria-labelledby="settingprofile-line-tab">                          
             <div id="load"></div>
         </div>
+        <form method="POST" action="{{ route('create.storage.link') }}">
+            @csrf
+            <button type="submit" class="btn btn-danger btn-sm" >Create Storage Link</button>
+        </form>
       </div>
     </div>
     </div>

@@ -1,8 +1,5 @@
-jQuery(document).ready(function() {
-    jQuery('#datatable').dataTable({
-        "iDisplayLength": 20,
-        "aLengthMenu": [[20, 30, 50, -1], [20, 30, 50, "All"]]
-    });
+$(document).ready(function() {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -18,7 +15,8 @@ jQuery(document).ready(function() {
         $(document).on('click', '.update-status', function() {
             var id = $(this).attr("data-id");
             var status = $(this).attr("data-status");
-        
+            console.log(id);
+            console.log(status);
             $.ajax({
                 url: cutiUpdateUrl,
                 type: 'POST',

@@ -39,4 +39,5 @@ class Employee extends Authenticatable
     {
         return $this->employees_password;
     }
+
 }

@@ -18,6 +18,10 @@
             <td>{{ $kunjungan->employees->employees_name }}</td>
             <td>{{format_hari_tanggal($kunjungan->kunjungan_tgl) }}</td>
             <td class="text-center">{{ $kunjungan->time_in }}</td>
+            <td class="text-center picture">
+                  <a class="image-link" href="{{ asset('storage/kunjungan/' . $kunjungan->picture_in) }}">
+                          <img src="{{ asset('storage/kunjungan/' . $kunjungan->picture_in) }}"></a>
+                  </td>
             <td>{{ $kunjungan->information }}</td>
             <td class="text-right">
                 <a href="#" class="btn btn-sm btn-info btn-modal" 

@@ -53,13 +53,20 @@
                                                     <div class="btn-group">
                                                     @if ($user->level == 1)
                                                       <div class="btn-group">
-                                                        <button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Proses
+                                                        {{-- <button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Proses
                                                           <span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu" role="menu">
+                                                        </button> --}}
+                                                        <button class="btn btn-warning btn-xs" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>Proses
+                                                          </button>
+                                                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                            <a class="dropdown-item d-flex align-items-center update-status" data-status="1" data-id="{{$cuti['cuty_id']}}"><i  data-feather="check" class="update-status icon-sm me-2"></i> <span class="">Setujui</span></a>
+                                                            <a class="dropdown-item d-flex align-items-center update-status" data-status="2" data-id="{{$cuti['cuty_id']}}"><i data-feather="x" class="update-status icon-sm me-2"></i> <span class="">Tidak disetujui</span></a>
+                                                          </div>
+                                                        {{-- <ul class="dropdown-menu" role="menu">
                                                           <li><a href="javascript:void(0);" data-id="{{$cuti['cuty_id']}}" data-status="1" class="update-status btn btn-xs btn-success" >Setujui</a></li>
                                                           <li><a href="javascript:void(0);" data-id="{{$cuti['cuty_id']}}" data-status="2" class="update-status btn btn-xs btn-danger">Tidak disetujui</a></li>
-                                                        </ul>
+                                                        </ul> --}}
                                                       </div>
                                                       <a href="{{ route('cuti.print', $cuti['cuty_id']) }}" target="_blank" class="btn btn-xs btn-danger " title="Print">
                                                         <i class="fa fa-print" aria-hidden="true"></i> Print
@@ -67,7 +74,7 @@
                                                     
                                                     @else
                                                       <button type="button" class="btn btn-warning btn-xs access-failed enable-tooltip" title="Edit"><i class="fa fa-pencil-square-o"></i> Ubah</button>
-                                                      <buton type="button" class="btn btn-xs btn-danger access-failed" title="Hapus"><i class="fa fa-trash-o"></i> Hapus</button>
+                                                      <button type="button" class="btn btn-xs btn-danger access-failed" title="Hapus"><i class="fa fa-trash-o"></i> Hapus</button>
                                                     @endif
                                                     </div>
                                             
@@ -81,15 +88,18 @@
                     </div>
     </div>
 </div>
+@push ('plugin-scripts')
   <script src="{{ asset('assets/plugins/datatables-net/jquery.dataTables.js') }}"></script>
   <script src="{{ asset('assets/plugins/datatables-net-bs5/dataTables.bootstrap5.js') }}"></script>
   <script src=" https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
+@endpush
+@push('custom-scripts')
+<script src="{{ asset('admin/js/cuti.js') }}"></script>
+@endpush
   <script>
     var cutiUpdateUrl = "{{ route('cuti.updateStatus') }}";
   </script> 
-  <script>
+  {{-- <script>
     $(document).ready(function() {
     $('#datatable').dataTable({
         "iDisplayLength": 20,
@@ -160,6 +170,6 @@
         
     
     });
-  </script>
+  </script> --}}
 
 @endsection

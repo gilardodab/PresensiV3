@@ -69,4 +69,6 @@
   </div>
 </div>
 
-  
+  <script>
+     $(".image-link").magnificPopup({type:"image"});
+  </script>

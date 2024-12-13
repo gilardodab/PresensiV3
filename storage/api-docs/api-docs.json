@@ -109,6 +109,436 @@
                 }
             }
         },
+        "/yf/callplan/load-data-callplan": {
+            "get": {
+                "tags": [
+                    "Callplan"
+                ],
+                "summary": "Memuat data Callplan",
+                "description": "Memuat data Callplan berdasarkan tanggal yang diberikan.",
+                "operationId": "81eb8b4473b375edafbab574b669a8a7",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2023-01-01"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2023-12-31"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil memuat data Callplan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "tanggal_cp": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2023-01-01"
+                                                    },
+                                                    "nama_outlet": {
+                                                        "type": "string",
+                                                        "example": "Outlet A"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Visit for review"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Callplan berhasil dimuat."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/callplan/tambah-data-callplan": {
+            "post": {
+                "tags": [
+                    "Callplan"
+                ],
+                "summary": "Menambah data callplan baru",
+                "description": "Menambahkan data callplan baru dan juga kunjungan terkait.",
+                "operationId": "cb0c3b57cd321680d0533fc404bd806c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tanggal_cp",
+                                    "nama_outlet",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "tanggal_cp": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-01"
+                                    },
+                                    "nama_outlet": {
+                                        "type": "string",
+                                        "example": "Outlet A"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Visit for review"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Data callplan berhasil ditambah",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Call Plan berhasil ditambah!"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "callplan_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "kunjungan_status": {
+                                                    "type": "string",
+                                                    "example": "Belum Selesai"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan saat menyimpan data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Terjadi kesalahan saat menyimpan data."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/callplan/edit-data-callplan/{id}": {
+            "put": {
+                "tags": [
+                    "Callplan"
+                ],
+                "summary": "Mengedit data callplan berdasarkan ID",
+                "description": "Memperbarui data callplan yang sudah ada.",
+                "operationId": "188c365929700b909607e1a66ee71f02",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID callplan yang ingin diedit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tanggal_cp",
+                                    "nama_outlet"
+                                ],
+                                "properties": {
+                                    "tanggal_cp": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-01"
+                                    },
+                                    "nama_outlet": {
+                                        "type": "string",
+                                        "example": "Outlet A"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Visit for review"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data callplan berhasil diperbarui",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Callplan berhasil diubah."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "callplan_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "tanggal_cp": {
+                                                    "type": "string",
+                                                    "example": "2024-12-01"
+                                                },
+                                                "nama_outlet": {
+                                                    "type": "string",
+                                                    "example": "Outlet A"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Visit for review"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan saat mengubah data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Terjadi kesalahan saat mengubah data."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/yf/callplan/hapus-data-callplan/{id}": {
+            "delete": {
+                "tags": [
+                    "Callplan"
+                ],
+                "summary": "Menghapus data callplan berdasarkan ID",
+                "description": "Menghapus callplan berdasarkan ID yang diberikan.",
+                "operationId": "2a8df06860dbcbcad175949e89cf39ff",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID callplan yang ingin dihapus",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data callplan berhasil dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Callplan berhasil dihapus."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data callplan tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Callplan tidak ditemukan."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan saat menghapus data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Terjadi kesalahan saat menghapus data."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/yf/cuti/data-cuti": {
             "get": {
                 "tags": [
@@ -594,6 +1024,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Callplan",
+            "description": "Callplan"
         },
         {
             "name": "Cuti",

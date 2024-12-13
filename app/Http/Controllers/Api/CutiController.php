@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\Cuty;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,7 +47,7 @@ class CutiController extends Controller
         $userId = Auth::user(); // Get the logged-in user's ID
         $year = date('Y');
         $filter[] = [DB::raw('YEAR(cuty_start)'), '=', $year];
-        $cuties = Cuty::with('employees')
+        $cuties = Cuty::with('employees','')
         ->where('employees_id', $userId->id)
         ->where($filter)
         ->get();
@@ -89,12 +89,21 @@ class CutiController extends Controller
         // Mendapatkan tanggal hari ini dan H+7
         $today = now()->toDateString(); // Tanggal hari ini
         $maxDate = now()->addDays(7)->toDateString(); // Tanggal H+7
-    
+        $employee = Auth::user();
+        // Validasi input
+        Log::info('Received data for cuti creation', [
+            'cuty_start' => $request->cuty_start,
+            'cuty_end' => $request->cuty_end,
+            'date_work' => $request->date_work,
+            'cuty_total' => $request->cuty_total,
+            'cuty_description' => $request->cuty_description,
+        ]);
+        
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'cuty_start' => "required|date|after_or_equal:$today|after_or_equal:$maxDate",
-            'cuty_end' => 'required|date|after_or_equal:cuty_start',
-            'date_work' => 'required|date|after_or_equal:cuty_end',
+            'cuty_start' => 'required|date_format:Y-m-d',
+            'cuty_end' => 'required|date_format:Y-m-d',
+            'date_work' => 'required|date_format:Y-m-d',
             'cuty_total' => 'required|integer',
             'cuty_description' => 'nullable|string',
         ]);
@@ -111,8 +120,8 @@ class CutiController extends Controller
         // Coba simpan data cuti
         try {
             $cuty = Cuty::create([
-                'employees_id' => Auth::id(),
-                'cuty_start' => $request->cuty_start,
+                'employees_id' => $employee->id,
+                'cuty_start' =>  $request->cuty_start,
                 'cuty_end' => $request->cuty_end,
                 'date_work' => $request->date_work,
                 'cuty_total' => $request->cuty_total,

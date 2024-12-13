@@ -9,6 +9,7 @@ use App\Models\Callplan;
 use App\Models\Kunjungan;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class CallplanController extends Controller
 {
@@ -70,12 +71,12 @@ class CallplanController extends Controller
             'nama_outlet' => 'required|string',
             'description' => 'required|string',
         ]);
-    
+        $carbonDate = Carbon::createFromFormat('d-m-Y', $request->tanggal_cp)->format('Y-m-d');
         try {
             // Membuat data callplan dan mendapatkan ID-nya
             $callplan = Callplan::create([
                 'employees_id' => Auth::id(),
-                'tanggal_cp' => $request->tanggal_cp,
+                'tanggal_cp' => $carbonDate,
                 'nama_outlet' => $request->nama_outlet,
                 'description' => $request->description,
             ]);
@@ -83,9 +84,9 @@ class CallplanController extends Controller
             // Menggunakan ID callplan yang baru dibuat untuk membuat data kunjungan
             Kunjungan::create([
                 'employees_id' => Auth::id(),
-                'kunjungan_tgl' => $request->tanggal_cp,
+                'kunjungan_tgl' => $carbonDate,
                 'status_kunjungan' => 'Belum Selesai',
-                'callplan_id' => $callplan->id, // Menggunakan ID dari callplan yang baru saja dibuat
+                'callplan_id' => $callplan->callplan_id, // Menggunakan ID dari callplan yang baru saja dibuat
                 'description' => $request->description,
             ]);
     
@@ -93,7 +94,7 @@ class CallplanController extends Controller
                 'status' => 'success',
                 'message' => 'Data Call Plan berhasil ditambah!',
                 'data' => [
-                    'callplan_id' => $callplan->id, // Mengembalikan ID Callplan yang baru
+                    'callplan_id' => $callplan->callplan_id, // Mengembalikan ID Callplan yang baru
                     'kunjungan_status' => 'Belum Selesai'
                 ]
             ], 201);
@@ -114,8 +115,8 @@ class CallplanController extends Controller
         
         // Validasi input
         $request->validate([
-            'callplan_id' => 'required|exists:callplans,id', // Pastikan nama tabel dan kolom sesuai
-            'tanggal_cp' => 'required|date_format:d-m-Y',
+            'callplan_id' => 'required|exists:callplan,callplan_id', // Pastikan nama tabel sesuai
+            'tanggal_cp' => 'required|date',
             'nama_outlet' => 'required|string',
             'description' => 'nullable|string',
         ]);
@@ -131,7 +132,7 @@ class CallplanController extends Controller
             }
 
             // Memformat tanggal dan memperbarui data
-            $callplan->tanggal_cp = $request->tanggal_cp;
+            $callplan->tanggal_cp = Carbon::createFromFormat('d-m-Y', $request->tanggal_cp)->format('Y-m-d');
             $callplan->nama_outlet = $request->nama_outlet;
             $callplan->description = $request->description;
             $callplan->save();
@@ -140,7 +141,7 @@ class CallplanController extends Controller
                 'status' => 'success',
                 'message' => 'Data Callplan berhasil diubah.',
                 'data' => [
-                    'callplan_id' => $callplan->id,
+                    // 'callplan_id' => $callplan->id,
                     'tanggal_cp' => $callplan->tanggal_cp,
                     'nama_outlet' => $callplan->nama_outlet,
                     'description' => $callplan->description,
@@ -161,19 +162,20 @@ class CallplanController extends Controller
     {
         $callplanId = $request->input('callplan_id');
         $callplan = Callplan::find($callplanId);
-
+    
         if (!$callplan) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Data Callplan tidak ditemukan.'
             ], 404);
         }
-
+    
         $callplan->delete();
-
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Data Callplan berhasil dihapus.'
         ], 200);
     }
+    
 }

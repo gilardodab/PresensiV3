@@ -114,7 +114,7 @@ class KaryawanController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Password berhasil diperbarui'
-        ]);
+        ], 200);
     }
 
     public function updateProfile(Request $request)

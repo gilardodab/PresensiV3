@@ -5,13 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use App\Models\Employee;
+use App\Models\Notification;
 
+
+use App\Services\FirebaseService;
 use App\Models\Cuty;
 
 class CutyController extends Controller
 {
     //
+    protected $firebaseService;
+
+    public function __construct(FirebaseService $firebaseService)
+    {
+        $this->firebaseService = $firebaseService;
+    }
     public function index()
     {
         $cuties = Cuty::with ('employees')->get();
@@ -142,28 +153,68 @@ class CutyController extends Controller
 
     public function updateStatus(Request $request)
     {
-        // Validate incoming request
+        // Validasi input
         $request->validate([
             'id' => 'required|exists:cuty,cuty_id',
-            'status' => 'required|integer',
+            'status' => 'required',
         ]);
     
         try {
-            // Find the Cuty record
+            // Cari data cuti
             $cuty = Cuty::find($request->id);
             if (!$cuty) {
-                return response()->json(['status' => 'error', 'message' => 'Cuty not found.'], 404);
+                return response()->json(['status' => 'error', 'message' => 'Cuti tidak ditemukan.'], 404);
             }
     
-            // Update the status
+            // Update status cuti
             $cuty->cuty_status = $request->status;
             $cuty->save();
     
-            return response()->json(['status' => 'success', 'message' => 'Cuty status updated successfully.']);
+            // Ambil semua token 
+            $employee = Employee::find($cuty->employees_id);
+
+            if (!$employee || !$employee->fcm_token) {
+                return response()->json(['status' => 'error', 'message' => 'Employee FCM token not found.'], 404);
+            }
+            // $tokens = Employee::pluck('fcm_token')->toArray();
+            $token = $employee->fcm_token;
+            $title = 'Permohonan Cuti Yofa Group';
+            
+            // Tentukan pesan body berdasarkan status
+            if ($request->status == 1) {
+                $body = 'Yeayy 😍, Cuti Anda Telah  Disetujui. Selamat Menikmati Hari Cuti Anda';
+                Notification::create([
+                    'employee_id' => $employee->id,
+                    'title' => $title,
+                    'body' => $body
+                ]);
+            } elseif ($request->status == 2) {
+                $body = 'Maaf Cuti Anda Ditolak 😥. Silahkan Hubungi Admin HR Untuk Info Lebih Lanjut.';
+                Notification::create([
+                    'employee_id' => $employee->id,
+                    'title' => $title,
+                    'body' => $body
+                ]);
+            } else {
+                $body = 'Cuti Anda Telah Di Respon.';
+            }
+    
+            $data = ['key' => 'value'];  // Data tambahan (jika diperlukan)
+    
+            // Kirim notifikasi ke setiap token
+            $response = null;
+                $response = $this->firebaseService->sendNotification($token, $title, $body, $data);
+                // Optionally, log or handle response
+                // Misalnya log jika perlu
+                Log::info("Notification sent to token: $token with response: " . json_encode($response));
+            // Jika sukses mengirim notifikasi, kembalikan respons sukses
+            return response()->json(['status' => 'success', 'message' => 'Cuty status updated and notifications sent successfully.']);
+            
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
+    
 
     public function print($id)
     {

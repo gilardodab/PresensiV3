@@ -12,6 +12,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\CutyController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\NotificationController;
 use App\Models\Callplan;
 use App\Models\Employee;
 use App\Models\Kunjungan;
@@ -55,6 +56,8 @@ Route::middleware(['guest:user'])->group(function () {
     // })->name('loginadmin');
     Route::post('/prosesloginadmin', [AuthController::class, 'prosesloginadmin'])->name('prosesloginadmin');
 });
+
+Route::post('/send-notification', [NotificationController::class, 'sendNotification']);
 
 Route::middleware(['auth:employee'])->group(function () {
 // Route::get('/home', function () {
@@ -109,8 +112,9 @@ Route::post('logoutadmin', [AuthController::class, 'logoutadmin'])->name('logout
 
 Route::get('loginadmin', [AuthController::class, 'showLoginFormadmin'])->name('loginadmin');
 
-Route::middleware(['auth:user'])->group(function () {
-    Route::get('/adminyofa', [AuthController::class, 'dashboard'])->name('dashboard');
+//middlewire auth:user with prefix group adminyofa 
+Route::middleware(['auth:user'])->prefix('adminyofa/')->group(function () {
+    Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
 
     Route::get('register', [AuthController::class, 'create'])->name('register.create');  // Show registration form
     Route::post('register', [AuthController::class, 'store'])->name('register.store');  // Handle registration form submission
@@ -136,7 +140,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::delete('/kantor/{building}', [BuildingController::class, 'destroy'])->name('kantor.destroy');
 
     Route::get('/cutyadmin', [CutyController::class, 'index'])->name('cutyadmin');
-    Route::post('/cuty/update-status', [CutyController::class, 'updateStatus'])->name('cuti.updateStatus');
+    Route::post('/cuty/update-status/', [CutyController::class, 'updateStatus'])->name('cuti.updateStatus');
     Route::get('/cuty/print/{id}', [CutyController::class, 'print'])->name('cuti.print');
     
     // Route::post('/prosesloginadmin', [AuthController::class, 'prosesloginadmin'])->name('prosesloginadmin');
@@ -148,6 +152,9 @@ Route::middleware(['auth:user'])->group(function () {
     //kunjungan
     Route::get('/kunjunganadmin', [KunjunganController::class, 'index'])->name('adminyofa.kunjungan.index');
     Route::get('/loaddatakunjunganadmin', [KunjunganController::class, 'loadDataKunjunganAdmin'])->name('kunjungan.loadadmin');
+
+    //callplan
+    
 
     // Route::get('/absensi', [PresenceController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/create', [PresenceController::class, 'create'])->name('absensi.create');
@@ -178,6 +185,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/settings/profile', [SettingController::class, 'updateProfile'])->name('settings.profile');    
     Route::get('/settings/umum', [SettingController::class, 'loadSettingUmum'])->name('settings.umum');
     Route::get('/settings/profile', [SettingController::class, 'loadSettingProfile'])->name('settings.profile');
+    Route::post('/settings/storage', [SettingController::class, 'StorageLink'])->name('create.storage.link');
 
     Route::get('/jabatan', [PositionController::class, 'index'])->name('adminyofa.jabatan.index');
     Route::get('/jabatan/create', [PositionController::class, 'create'])->name('jabatan.create');

@@ -161,25 +161,42 @@ class KunjunganController extends Controller
     
         // Validasi input request
         $request->validate([
-            'picture' => 'required|string',
+            // 'picture' => 'required|string',
             'latitude' => 'required|string',
+            'longitude' => 'required|string',
             'kunjungan_id' => 'required|exists:kunjungan,kunjungan_id'
         ]);
     
         try {
             $imageData = $request->input('picture');
             $user = Auth::user();
-            
+    
             // Mengambil data employee lengkap dengan shift dan building
             $employee = Employee::with('shift', 'building')->where('id', $user->id)->first();
-            
+    
             if (!$employee) {
                 return response()->json(['error' => 'Data karyawan tidak ditemukan.'], 404);
             }
     
+            $startOfWeek = now()->startOfWeek();
+            $endOfWeek = now()->endOfWeek();
+        
+            // Check if there are already 6 "UNPLAN" visits within the week
+            $unplanCount = Kunjungan::where('employees_id', $user->id)
+                ->whereBetween('kunjungan_tgl', [$startOfWeek, $endOfWeek])
+                ->where('status_kunjungan', 'UNPLAN')
+                ->count();
+        
+            if ($unplanCount >= 6) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda sudah mencapai batas maksimal kunjungan UNPLAN untuk minggu ini!'
+                ], 403);
+            }
+    
             // Mencari kunjungan berdasarkan ID dan tanggal hari ini
             $kunjungan = Kunjungan::where('employees_id', $employee->id)
-                ->where('kunjungan_tgl', now()->toDateString())
+                // ->where('kunjungan_tgl', now()->toDateString())
                 ->where('kunjungan_id', $kunjungan_id)
                 ->first();
                 
@@ -187,42 +204,34 @@ class KunjunganController extends Controller
                 return response()->json(['error' => 'Data kunjungan tidak ditemukan untuk hari ini.'], 404);
             }
     
-            // Memeriksa apakah format base64 gambar valid
-            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                $type = strtolower($type[1]);
-        
-                if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif'])) {
-                    return response()->json(['error' => 'Format gambar tidak valid! Hanya jpg, jpeg, png, gif yang diizinkan.'], 422);
-                }
-        
+
                 $imageData = base64_decode($imageData);
-        
-                if ($imageData === false) {
-                    return response()->json(['error' => 'Base64 decode gagal!'], 422);
-                }
-        
+    
+
+                $type = 'jpg';
                 // Memeriksa apakah kunjungan sudah ada `time_in`
                 if (empty($kunjungan->time_in) || $kunjungan->time_in == '00:00:00') {
                     $filename = now()->toDateString() . '-kunjungan-' . time() . '-' . Auth::id() . '.' . $type;
-                    $filePath = storage_path('app/public/kunjungan/' . $filename);
+    
+                    // Menyimpan gambar ke direktori public
+                    $filePath = public_path('storage/kunjungan/' . $filename);
     
                     // Memastikan direktori penyimpanan ada
-                    if (!file_exists(storage_path('app/public/kunjungan'))) {
-                        mkdir(storage_path('app/public/kunjungan'), 0755, true);
+                    if (!file_exists(public_path('storage/kunjungan'))) {
+                        mkdir(public_path('storage/kunjungan'), 0755, true);
                     }
     
-                    // Menyimpan gambar ke storage
+                    // Menyimpan gambar ke storage publik
                     file_put_contents($filePath, $imageData);
-        
+    
                     // Mengupdate data kunjungan
                     $kunjungan->update([
                         'time_in' => now()->toTimeString(),
-                        'picture_in' => $filename,
-                        'latitude_longtitude_in' => $request->latitude,
+                        'picture_in' => $filename, // Path relatif
+                        'latitude_longtitude_in' =>$request->latitude . ',' . $request->longitude,
                         'status_kunjungan' => 'Selesai'
                     ]);
-        
+    
                     return response()->json([
                         'status' => 'success',
                         'message' => 'Selamat "' . $employee->employees_name . '" berhasil Absen Tempat pada Tanggal ' . now()->toDateString() . ' dan Jam : ' . now()->toTimeString()
@@ -233,9 +242,6 @@ class KunjunganController extends Controller
                         'message' => 'Anda sudah melakukan absen tempat pada Tanggal ' . now()->toDateString() . ' dan Jam ' . $kunjungan->time_in . '.'
                     ], 400);
                 }
-            } else {
-                return response()->json(['error' => 'Format base64 gambar tidak valid!'], 422);
-            }
     
         } catch (\Exception $e) {
             return response()->json([
@@ -245,6 +251,4 @@ class KunjunganController extends Controller
             ], 500);
         }
     }
-    
-    
 }

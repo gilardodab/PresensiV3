@@ -15,7 +15,7 @@ class CallplanController extends Controller
     public function index()
     {
         $callplan = Callplan::all();
-        return view('callplan', compact('callplan'));
+        return view('adminyofa.callplan.index', compact('callplan'));
     }
     public function userindex()
     {

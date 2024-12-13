@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -108,7 +109,28 @@ class AuthController extends Controller
     
         return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
     }
-    
-    
-    
+
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'fcm_token' => 'required',
+        ]);
+
+        $user = $request->user();
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+
+        return response([
+            'message' => 'FCM token updated',
+        ], 200);
+    }
+
+    public function notifikasi(){
+        $user = Auth::user();
+        $notifikasi = Notification::where('employee_id', $user->id)->get();
+        return response([
+            'status' => 'success',
+            'data' => $notifikasi,
+        ], 200);
+    }
 }

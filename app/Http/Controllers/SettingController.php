@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use  Illuminate\Support\Facades\Artisan;
 
 class SettingController extends Controller
 {
@@ -117,5 +118,10 @@ class SettingController extends Controller
         $setting->save();
 
         return response()->json(['success' => 'Profil berhasil diperbarui']);
+    }
+
+    public function StorageLink(){
+        Artisan::call('storage:link');
+        return redirect('/adminyofa')->with('status', "Storage link created!");
     }
 }
